@@ -12,3 +12,5 @@ gen/
 # Eclipse project files
 .classpath
 .project
+
+.DS_Store
