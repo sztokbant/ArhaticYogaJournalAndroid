@@ -6,14 +6,17 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
 	private static final String URL = "http://www.arhaticyogajournal.com";
 	private WebView webView;
+	private ProgressBar progressBar;
 
 	@SuppressLint("SetJavaScriptEnabled")
 	@Override
@@ -23,7 +26,8 @@ public class MainActivity extends Activity {
 
 		webView = (WebView) findViewById(R.id.webview);
 		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setWebViewClient(new WebViewClient());
+
+		webView.setWebViewClient(buildWebViewClient());
 		webView.setWebChromeClient(buildWebChromeClient());
 
 		if (savedInstanceState != null) {
@@ -31,6 +35,31 @@ public class MainActivity extends Activity {
 		} else {
 			webView.loadUrl(URL);
 		}
+	}
+
+	/**
+	 * Builds a WebViewClient with a spinner ProgressBar
+	 * http://www.technotalkative.com/android-load-webview-with-progressbar/
+	 * 
+	 * @return Customized WebViewClient
+	 */
+	private WebViewClient buildWebViewClient() {
+		progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+		return new WebViewClient() {
+			@Override
+			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+				progressBar.setVisibility(View.VISIBLE);
+				view.loadUrl(url);
+				return true;
+			}
+
+			@Override
+			public void onPageFinished(WebView view, String url) {
+				super.onPageFinished(view, url);
+				progressBar.setVisibility(View.GONE);
+			}
+		};
 	}
 
 	/**
