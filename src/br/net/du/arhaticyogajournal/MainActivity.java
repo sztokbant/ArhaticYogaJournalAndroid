@@ -42,8 +42,9 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Builds a WebViewClient with a spinner ProgressBar
+	 * Builds a WebViewClient with a spinner ProgressBar, external handling of "mailto:" URLs
 	 * http://www.technotalkative.com/android-load-webview-with-progressbar/
+	 * http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
 	 * 
 	 * @return Customized WebViewClient
 	 */
