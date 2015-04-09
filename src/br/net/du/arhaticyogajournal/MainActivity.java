@@ -1,9 +1,13 @@
 package br.net.du.arhaticyogajournal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,10 +51,25 @@ public class MainActivity extends Activity {
 		progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
 		return new WebViewClient() {
+
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
-				progressBar.setVisibility(View.VISIBLE);
-				view.loadUrl(url);
+				if (url.startsWith(WebView.SCHEME_MAILTO)) {
+					String[] dummyStringArray = new String[0];
+					List<String> to = new ArrayList<String>();
+					to.add(url.split(":")[1]);
+
+					Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+					emailIntent.setType("message/rfc822");
+					emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, to.toArray(dummyStringArray));
+					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Arhatic Yoga Journal Android");
+
+					view.getContext().startActivity(emailIntent);
+				} else {
+					progressBar.setVisibility(View.VISIBLE);
+					view.loadUrl(url);
+				}
+
 				return true;
 			}
 
