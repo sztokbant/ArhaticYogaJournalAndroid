@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Builds a WebViewClient with a spinner ProgressBar, external handling of "mailto:" URLs
+	 * Builds a WebViewClient with a spinner ProgressBar, external handling of "mailto:" URLs, ignoring "tel:" URLs
 	 * http://www.technotalkative.com/android-load-webview-with-progressbar/
 	 * http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
 	 * 
@@ -66,6 +66,8 @@ public class MainActivity extends Activity {
 					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Arhatic Yoga Journal Android");
 
 					view.getContext().startActivity(emailIntent);
+				} else if (url.startsWith(WebView.SCHEME_TEL)) {
+					// prevents accidental clicks on numbers to be interpreted as "tel:"
 				} else {
 					progressBar.setVisibility(View.VISIBLE);
 					view.loadUrl(url);
