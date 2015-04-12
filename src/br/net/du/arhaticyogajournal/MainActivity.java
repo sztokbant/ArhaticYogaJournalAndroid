@@ -30,12 +30,13 @@ public class MainActivity extends Activity {
 
 		webView = (WebView) findViewById(R.id.webview);
 
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setWebViewClient(buildWebViewClient());
+		webView.setWebChromeClient(buildWebChromeClient());
+
 		if (savedInstanceState != null) {
 			webView.restoreState(savedInstanceState);
 		} else {
-			webView.getSettings().setJavaScriptEnabled(true);
-			webView.setWebViewClient(buildWebViewClient());
-			webView.setWebChromeClient(buildWebChromeClient());
 			webView.loadUrl(URL);
 		}
 	}
