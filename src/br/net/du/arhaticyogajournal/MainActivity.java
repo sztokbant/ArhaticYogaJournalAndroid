@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
@@ -18,7 +19,8 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
-	private static final String URL = "http://www.arhaticyogajournal.com";
+	private static final String FQDN = "arhaticyogajournal.com";
+	private static final String URL = "http://www." + FQDN;
 	private WebView webView;
 	private ProgressBar progressBar;
 
@@ -42,9 +44,12 @@ public class MainActivity extends Activity {
 	}
 
 	/**
-	 * Builds a WebViewClient with a spinner ProgressBar, external handling of "mailto:" URLs, ignoring "tel:" URLs
+	 * Builds a WebViewClient with a spinner ProgressBar, external handling of "mailto:" URLs, ignoring "tel:" and
+	 * external URLs.
+	 * 
 	 * http://www.technotalkative.com/android-load-webview-with-progressbar/
 	 * http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
+	 * http://stackoverflow.com/questions/17994750/open-external-links-in-the-browser-with-android-webview
 	 * 
 	 * @return Customized WebViewClient
 	 */
@@ -68,9 +73,12 @@ public class MainActivity extends Activity {
 					view.getContext().startActivity(emailIntent);
 				} else if (url.startsWith(WebView.SCHEME_TEL)) {
 					// prevents accidental clicks on numbers to be interpreted as "tel:"
-				} else {
+				} else if (url.contains(FQDN)) {
 					progressBar.setVisibility(View.VISIBLE);
 					view.loadUrl(url);
+				} else {
+					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					startActivity(i);
 				}
 
 				return true;
