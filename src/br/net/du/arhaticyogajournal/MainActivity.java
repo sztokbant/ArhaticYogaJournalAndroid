@@ -19,8 +19,9 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
-	private static final String FQDN = "arhaticyogajournal.com";
-	private static final String URL = "http://www." + FQDN;
+	private static final String FQDN = "arhaticnet.herokuapp.com";
+	private static final String URL = "https://" + FQDN;
+	private static final String[] ALLOWED_FQDNS = { FQDN, "arhaticyogajournal.com" };
 	private WebView webView;
 	private ProgressBar progressBar;
 
@@ -73,7 +74,7 @@ public class MainActivity extends Activity {
 					view.getContext().startActivity(emailIntent);
 				} else if (url.startsWith(WebView.SCHEME_TEL)) {
 					// prevents accidental clicks on numbers to be interpreted as "tel:"
-				} else if (url.contains(FQDN)) {
+				} else if (isAllowed(url)) {
 					progressBar.setVisibility(View.VISIBLE);
 					view.loadUrl(url);
 				} else {
@@ -82,6 +83,15 @@ public class MainActivity extends Activity {
 				}
 
 				return true;
+			}
+
+			private boolean isAllowed(String url) {
+				for (String fqdn : ALLOWED_FQDNS) {
+					if (url.contains(fqdn)) {
+						return true;
+					}
+				}
+				return false;
 			}
 
 			@Override
