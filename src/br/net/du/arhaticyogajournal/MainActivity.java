@@ -19,9 +19,11 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
+	private static final String ARHATIC_YOGA_JOURNAL_ANDROID = "Arhatic Yoga Journal Android";
 	private static final String FQDN = "arhaticnet.herokuapp.com";
+	private static final String FQDN_BETA = "ayj-beta.herokuapp.com";
 	private static final String URL = "https://" + FQDN;
-	private static final String[] ALLOWED_FQDNS = { FQDN, "arhaticyogajournal.com" };
+	private static final String[] ALLOWED_FQDNS = { FQDN, FQDN_BETA, "arhaticyogajournal.com" };
 	private WebView webView;
 	private ProgressBar progressBar;
 
@@ -69,7 +71,7 @@ public class MainActivity extends Activity {
 					Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 					emailIntent.setType("message/rfc822");
 					emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, to.toArray(dummyStringArray));
-					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Arhatic Yoga Journal Android");
+					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ARHATIC_YOGA_JOURNAL_ANDROID);
 
 					view.getContext().startActivity(emailIntent);
 				} else if (url.startsWith(WebView.SCHEME_TEL)) {
