@@ -1,13 +1,11 @@
 package br.net.du.arhaticyogajournal;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -64,14 +62,16 @@ public class MainActivity extends Activity {
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				if (url.startsWith(WebView.SCHEME_MAILTO)) {
-					String[] dummyStringArray = new String[0];
-					List<String> to = new ArrayList<String>();
-					to.add(url.split(":")[1]);
+					MailTo mailto = MailTo.parse(url);
 
 					Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 					emailIntent.setType("message/rfc822");
-					emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, to.toArray(dummyStringArray));
-					emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, ARHATIC_YOGA_JOURNAL_ANDROID);
+					emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { mailto.getTo() });
+					emailIntent.putExtra(Intent.EXTRA_CC, mailto.getCc());
+					final String subject = mailto.getSubject() != null ? mailto.getSubject()
+							: ARHATIC_YOGA_JOURNAL_ANDROID;
+					emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
+					emailIntent.putExtra(Intent.EXTRA_TEXT, mailto.getBody());
 
 					view.getContext().startActivity(emailIntent);
 				} else if (url.startsWith(WebView.SCHEME_TEL)) {
