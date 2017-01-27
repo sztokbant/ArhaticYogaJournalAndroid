@@ -20,8 +20,9 @@ public class MainActivity extends Activity {
 	private static final String ARHATIC_YOGA_JOURNAL_ANDROID = "Arhatic Yoga Journal Android";
 	private static final String FQDN = "arhaticnet.herokuapp.com";
 	private static final String FQDN_BETA = "ayj-beta.herokuapp.com";
+	private static final String FQDN_USPHC = "ayjournal.herokuapp.com";
 	private static final String URL = "https://" + FQDN;
-	private static final String[] ALLOWED_FQDNS = { FQDN, FQDN_BETA, "arhaticyogajournal.com" };
+	private static final String[] ALLOWED_FQDNS = { FQDN, FQDN_BETA, FQDN_USPHC, "arhaticyogajournal.com" };
 	private WebView webView;
 	private ProgressBar progressBar;
 
