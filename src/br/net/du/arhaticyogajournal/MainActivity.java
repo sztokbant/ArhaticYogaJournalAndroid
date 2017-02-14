@@ -26,25 +26,13 @@ public class MainActivity extends Activity {
 	private SwipeRefreshLayout swipeRefresh;
 	private WebView webView;
 
-	@SuppressLint("SetJavaScriptEnabled")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
 		buildSwipeRefreshLayout();
-
-		webView = (WebView) findViewById(R.id.webview);
-
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setWebViewClient(buildWebViewClient());
-		webView.setWebChromeClient(buildWebChromeClient());
-
-		if (savedInstanceState != null) {
-			webView.restoreState(savedInstanceState);
-		} else {
-			webView.loadUrl(URL);
-		}
+		buildWebView(savedInstanceState);
 	}
 
 	/**
@@ -56,9 +44,25 @@ public class MainActivity extends Activity {
 		swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 			@Override
 			public void onRefresh() {
-				webView.reload();
+				// not calling reload() as it reposts a page if the request was POST
+				webView.loadUrl(webView.getUrl());
 			}
 		});
+	}
+
+	@SuppressLint("SetJavaScriptEnabled")
+	private void buildWebView(Bundle savedInstanceState) {
+		webView = (WebView) findViewById(R.id.webview);
+
+		webView.getSettings().setJavaScriptEnabled(true);
+		webView.setWebViewClient(buildWebViewClient());
+		webView.setWebChromeClient(buildWebChromeClient());
+
+		if (savedInstanceState != null) {
+			webView.restoreState(savedInstanceState);
+		} else {
+			webView.loadUrl(URL);
+		}
 	}
 
 	/**
