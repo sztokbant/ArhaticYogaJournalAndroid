@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -95,7 +96,6 @@ public class MainActivity extends Activity {
 				} else if (url.startsWith(WebView.SCHEME_TEL)) {
 					// prevents accidental clicks on numbers to be interpreted as "tel:"
 				} else if (isAllowed(url)) {
-					swipeRefresh.setRefreshing(true);
 					view.loadUrl(url);
 				} else {
 					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
@@ -112,6 +112,12 @@ public class MainActivity extends Activity {
 					}
 				}
 				return false;
+			}
+
+			@Override
+			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+				super.onPageStarted(view, url, favicon);
+				swipeRefresh.setRefreshing(true);
 			}
 
 			@Override
