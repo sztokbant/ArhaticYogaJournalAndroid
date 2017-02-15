@@ -18,17 +18,14 @@ import android.webkit.WebViewClient;
 
 public class MainActivity extends Activity {
 	private static final String ARHATIC_YOGA_JOURNAL_ANDROID = "Arhatic Yoga Journal Android";
-	private static final String FQDN = "arhaticnet.herokuapp.com";
-	private static final String FQDN_BETA = "ayj-beta.herokuapp.com";
-	private static final String FQDN_USPHC = "ayjournal.herokuapp.com";
-	private static final String URL = "https://" + FQDN;
-	private static final String[] ALLOWED_FQDNS = { FQDN, FQDN_BETA, FQDN_USPHC, "arhaticyogajournal.com" };
 
 	private SwipeRefreshLayout swipeRefresh;
 	private WebView webView;
 
+	private AppDomains appDomains = new AppDomains();
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
@@ -52,7 +49,7 @@ public class MainActivity extends Activity {
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
-	private void buildWebView(Bundle savedInstanceState) {
+	private void buildWebView(final Bundle savedInstanceState) {
 		webView = (WebView) findViewById(R.id.webview);
 
 		webView.getSettings().setJavaScriptEnabled(true);
@@ -62,7 +59,7 @@ public class MainActivity extends Activity {
 		if (savedInstanceState != null) {
 			webView.restoreState(savedInstanceState);
 		} else {
-			webView.loadUrl(URL);
+			webView.loadUrl(appDomains.getDefaultUrl());
 		}
 	}
 
@@ -79,11 +76,11 @@ public class MainActivity extends Activity {
 		return new WebViewClient() {
 
 			@Override
-			public boolean shouldOverrideUrlLoading(WebView view, String url) {
+			public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
 				if (url.startsWith(WebView.SCHEME_MAILTO)) {
-					MailTo mailto = MailTo.parse(url);
+					final MailTo mailto = MailTo.parse(url);
 
-					Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
+					final Intent emailIntent = new Intent(android.content.Intent.ACTION_SEND);
 					emailIntent.setType("message/rfc822");
 					emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { mailto.getTo() });
 					emailIntent.putExtra(Intent.EXTRA_CC, mailto.getCc());
@@ -95,33 +92,24 @@ public class MainActivity extends Activity {
 					view.getContext().startActivity(emailIntent);
 				} else if (url.startsWith(WebView.SCHEME_TEL)) {
 					// prevents accidental clicks on numbers to be interpreted as "tel:"
-				} else if (isAllowed(url)) {
+				} else if (appDomains.isAllowed(url)) {
 					view.loadUrl(url);
 				} else {
-					Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+					final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
 					startActivity(i);
 				}
 
 				return true;
 			}
 
-			private boolean isAllowed(String url) {
-				for (String fqdn : ALLOWED_FQDNS) {
-					if (url.contains(fqdn)) {
-						return true;
-					}
-				}
-				return false;
-			}
-
 			@Override
-			public void onPageStarted(WebView view, String url, Bitmap favicon) {
+			public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				swipeRefresh.setRefreshing(true);
 			}
 
 			@Override
-			public void onPageFinished(WebView view, String url) {
+			public void onPageFinished(final WebView view, final String url) {
 				super.onPageFinished(view, url);
 				swipeRefresh.setRefreshing(false);
 			}
@@ -138,16 +126,16 @@ public class MainActivity extends Activity {
 		return new WebChromeClient() {
 
 			@Override
-			public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) {
+			public boolean onJsConfirm(final WebView view, final String url, final String message, final JsResult result) {
 				new AlertDialog.Builder(MainActivity.this).setTitle(R.string.app_name).setMessage(message)
 						.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(final DialogInterface dialog, final int which) {
 								result.confirm();
 							}
 						}).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
 							@Override
-							public void onClick(DialogInterface dialog, int which) {
+							public void onClick(final DialogInterface dialog, final int which) {
 								result.cancel();
 							}
 						}).create().show();
@@ -162,7 +150,7 @@ public class MainActivity extends Activity {
 	 * https://developer.android.com/guide/webapps/webview.html#NavigatingHistory
 	 */
 	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
+	public boolean onKeyDown(final int keyCode, final KeyEvent event) {
 		// Check if the key event was the Back button and if there's history
 		if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
 			webView.goBack();
@@ -177,7 +165,7 @@ public class MainActivity extends Activity {
 	 * Saves WebView state in order to prevent it from losing context on screen rotation
 	 */
 	@Override
-	protected void onSaveInstanceState(Bundle outState) {
+	protected void onSaveInstanceState(final Bundle outState) {
 		super.onSaveInstanceState(outState);
 		webView.saveState(outState);
 	}
