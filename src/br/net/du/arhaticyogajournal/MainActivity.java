@@ -12,17 +12,13 @@ import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
 
 public class MainActivity extends Activity {
-	private static final String ARHATIC_YOGA_JOURNAL_ANDROID = "Arhatic Yoga Journal Android";
-
 	private SwipeRefreshLayout swipeRefresh;
 	private WebView webView;
 
@@ -78,6 +74,7 @@ public class MainActivity extends Activity {
 	 */
 	private WebViewClient buildWebViewClient() {
 		return new WebViewClient() {
+			private static final String DEFAULT_EMAIL_SUBJECT = "Arhatic Yoga Journal Android";
 
 			@Override
 			public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
@@ -88,8 +85,7 @@ public class MainActivity extends Activity {
 					emailIntent.setType("message/rfc822");
 					emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { mailto.getTo() });
 					emailIntent.putExtra(Intent.EXTRA_CC, mailto.getCc());
-					final String subject = mailto.getSubject() != null ? mailto.getSubject()
-							: ARHATIC_YOGA_JOURNAL_ANDROID;
+					final String subject = mailto.getSubject() != null ? mailto.getSubject() : DEFAULT_EMAIL_SUBJECT;
 					emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
 					emailIntent.putExtra(Intent.EXTRA_TEXT, mailto.getBody());
 
@@ -123,10 +119,12 @@ public class MainActivity extends Activity {
 					final String failingUrl) {
 				super.onReceivedError(view, errorCode, description, failingUrl);
 				if (!isConnected(view.getContext())) {
-					Toast toast = Toast.makeText(getBaseContext(), "You are not connected to the Internet.",
-							Toast.LENGTH_LONG);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
+					new AlertDialog.Builder(view.getContext()).setTitle("You are not connected to the Internet")
+							.setMessage("Make sure your Internet connection is working and swipe down to try again.")
+							.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog, int which) {
+								}
+							}).setIcon(android.R.drawable.ic_dialog_alert).show();
 				}
 			}
 
