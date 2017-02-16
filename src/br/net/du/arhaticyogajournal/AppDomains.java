@@ -14,7 +14,7 @@ public class AppDomains {
 	}
 
 	public boolean isAllowed(final String url) {
-		for (String fqdn : ALLOWED_FQDNS) {
+		for (final String fqdn : ALLOWED_FQDNS) {
 			if (url.contains(fqdn)) {
 				return true;
 			}
