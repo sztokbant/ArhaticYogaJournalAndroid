@@ -119,8 +119,8 @@ public class MainActivity extends Activity {
 					final String failingUrl) {
 				super.onReceivedError(view, errorCode, description, failingUrl);
 				if (!isConnected(view.getContext())) {
-					new AlertDialog.Builder(view.getContext()).setTitle("You are not connected to the Internet")
-							.setMessage("Make sure your Internet connection is working and swipe down to try again.")
+					new AlertDialog.Builder(view.getContext()).setTitle("No Internet Connection")
+							.setMessage("Please, check your Wi-Fi or cellular data network and swipe down to try again.")
 							.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
 								}
