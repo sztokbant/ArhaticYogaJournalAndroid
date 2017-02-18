@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.net.MailTo;
@@ -22,15 +23,18 @@ public class MainActivity extends Activity {
 	private SwipeRefreshLayout swipeRefresh;
 	private WebView webView;
 
-	private AppDomains appDomains = new AppDomains();
+	private AppDomains appDomains;
 
 	@Override
 	protected void onCreate(final Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		appDomains = new AppDomains(getBaseContext());
+
 		buildSwipeRefreshLayout();
-		buildWebView(savedInstanceState);
+		buildWebView();
+		populateWebView(savedInstanceState);
 	}
 
 	/**
@@ -49,17 +53,37 @@ public class MainActivity extends Activity {
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")
-	private void buildWebView(final Bundle savedInstanceState) {
+	private void buildWebView() {
 		webView = (WebView) findViewById(R.id.webview);
 
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(buildWebViewClient());
 		webView.setWebChromeClient(buildWebChromeClient());
+	}
 
-		if (savedInstanceState != null) {
+	/**
+	 * Populates webView's contents, either from Intent (external link), savedInstanceState or default URL.
+	 */
+	private void populateWebView(final Bundle savedInstanceState) {
+		final Intent intent = getIntent();
+		if (!Intent.ACTION_MAIN.equals(intent.getAction())) {
+			onNewIntent(intent);
+		} else if (savedInstanceState != null) {
 			webView.restoreState(savedInstanceState);
 		} else {
 			webView.loadUrl(appDomains.getDefaultUrl());
+		}
+	}
+
+	@Override
+	protected void onNewIntent(final Intent intent) {
+		super.onNewIntent(intent);
+		populateWebView(intent);
+	}
+
+	private void populateWebView(final Intent intent) {
+		if (Intent.ACTION_VIEW.equals(intent.getAction())) {
+			webView.loadUrl(intent.getData().toString());
 		}
 	}
 
@@ -74,7 +98,6 @@ public class MainActivity extends Activity {
 	 */
 	private WebViewClient buildWebViewClient() {
 		return new WebViewClient() {
-			private static final String DEFAULT_EMAIL_SUBJECT = "Arhatic Yoga Journal Android";
 
 			@Override
 			public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
@@ -85,7 +108,8 @@ public class MainActivity extends Activity {
 					emailIntent.setType("message/rfc822");
 					emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { mailto.getTo() });
 					emailIntent.putExtra(Intent.EXTRA_CC, mailto.getCc());
-					final String subject = mailto.getSubject() != null ? mailto.getSubject() : DEFAULT_EMAIL_SUBJECT;
+					final String subject = mailto.getSubject() != null ? mailto.getSubject() : view.getContext()
+							.getResources().getString(R.string.default_email_subject);
 					emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
 					emailIntent.putExtra(Intent.EXTRA_TEXT, mailto.getBody());
 
@@ -118,9 +142,11 @@ public class MainActivity extends Activity {
 			public void onReceivedError(final WebView view, final int errorCode, final String description,
 					final String failingUrl) {
 				super.onReceivedError(view, errorCode, description, failingUrl);
-				if (!isConnected(view.getContext())) {
-					new AlertDialog.Builder(view.getContext()).setTitle("No Internet Connection")
-							.setMessage("Please, check your Wi-Fi or cellular data network and swipe down to try again.")
+				final Context context = view.getContext();
+				if (!isConnected(context)) {
+					final Resources resources = context.getResources();
+					new AlertDialog.Builder(context).setTitle(resources.getString(R.string.error_dialog_title))
+							.setMessage(resources.getString(R.string.error_dialog_message))
 							.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog, int which) {
 								}

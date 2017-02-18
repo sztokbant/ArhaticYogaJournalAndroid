@@ -2,5 +2,15 @@
 <resources>
 
     <string name="app_name">Arhatic Yoga Journal</string>
+    <string name="default_email_subject">"Arhatic Yoga Journal Android"</string>
+
+    <string name="error_dialog_title">No Internet Connection</string>
+    <string name="error_dialog_message">Please, check your Wi-Fi or cellular data network and swipe down to try again.</string>
+
+    <string name="prod_domain">arhaticnet.herokuapp.com</string>
+    <string name="beta_domain">ayj-beta.herokuapp.com</string>
+    <string name="usphc_domain">ayjournal.herokuapp.com</string>
+    <string name="public_domain">arhaticyogajournal.com</string>
+    <string name="www_public_domain">www.arhaticyogajournal.com</string>
 
 </resources>

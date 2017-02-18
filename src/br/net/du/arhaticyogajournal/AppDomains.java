@@ -1,21 +1,31 @@
 package br.net.du.arhaticyogajournal;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 public class AppDomains {
-	private static final String FQDN = "arhaticnet.herokuapp.com";
-	private static final String FQDN_BETA = "ayj-beta.herokuapp.com";
-	private static final String FQDN_USPHC = "ayjournal.herokuapp.com";
+	private final String[] allowedDomains;
+	private final String defaultUrl;
 
-	private static final String[] ALLOWED_FQDNS = { FQDN, FQDN_BETA, FQDN_USPHC, "arhaticyogajournal.com" };
+	public AppDomains(final Context context) {
+		final Resources resources = context.getResources();
 
-	private final String defaultUrl = "https://" + FQDN;
+		final String prodDomain = resources.getString(R.string.prod_domain);
+		final String betaDomain = resources.getString(R.string.beta_domain);
+		final String usphcDomain = resources.getString(R.string.usphc_domain);
+		final String publicDomain = resources.getString(R.string.public_domain);
+
+		allowedDomains = new String[] { prodDomain, betaDomain, usphcDomain, publicDomain };
+		defaultUrl = "https://" + prodDomain;
+	}
 
 	public String getDefaultUrl() {
 		return defaultUrl;
 	}
 
 	public boolean isAllowed(final String url) {
-		for (final String fqdn : ALLOWED_FQDNS) {
-			if (url.contains(fqdn)) {
+		for (final String domain : allowedDomains) {
+			if (url.contains(domain)) {
 				return true;
 			}
 		}
