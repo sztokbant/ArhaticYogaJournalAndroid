@@ -9,9 +9,16 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+
+import com.github.clans.fab.FloatingActionButton;
+import com.github.clans.fab.FloatingActionMenu;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MainActivity extends Activity {
     private AppDomains appDomains;
@@ -28,6 +35,7 @@ public class MainActivity extends Activity {
         buildSwipeRefreshLayout();
         buildWebView();
         populateWebView(savedInstanceState);
+        setFloatingActionMenuLinks();
     }
 
     /**
@@ -52,6 +60,9 @@ public class MainActivity extends Activity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new RestrictedWebViewClient(this));
         webView.setWebChromeClient(buildWebChromeClient());
+
+        // Disable auto-complete suggestions to prevent NullPointerException with AutofillPopup
+        webView.getSettings().setSaveFormData(false);
 
         appendAppVersionToUserAgent();
     }
@@ -97,6 +108,35 @@ public class MainActivity extends Activity {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             webView.loadUrl(intent.getData().toString());
         }
+    }
+
+    void setFloatingActionMenuLinks() {
+        String baseUrl;
+        try {
+            final URL url = new URL(webView.getUrl());
+            baseUrl = String.format("%s%s", "https://", url.getHost());
+        } catch (MalformedURLException e) {
+            baseUrl = appDomains.getDefaultUrl();
+        }
+
+        createOnClickListenerForFloatingActionButton(R.id.new_practice_execution, baseUrl, "practice_executions/multi");
+        createOnClickListenerForFloatingActionButton(R.id.new_tithing, baseUrl, "tithings/new");
+        createOnClickListenerForFloatingActionButton(R.id.new_service, baseUrl, "services/new");
+        createOnClickListenerForFloatingActionButton(R.id.new_study, baseUrl, "studies/new");
+    }
+
+    private void createOnClickListenerForFloatingActionButton(final int floatingActionButtonId, final String baseUrl, final String path) {
+        final String url = String.format("%s/%s", baseUrl, path);
+        final FloatingActionButton fab = (FloatingActionButton) findViewById(floatingActionButtonId);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View view) {
+                webView.loadUrl(url);
+                FloatingActionMenu floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
+                floatingActionMenu.close(true);
+            }
+        });
     }
 
     /**

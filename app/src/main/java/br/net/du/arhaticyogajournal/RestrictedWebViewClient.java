@@ -65,6 +65,7 @@ final class RestrictedWebViewClient extends WebViewClient {
     public void onPageFinished(final WebView view, final String url) {
         super.onPageFinished(view, url);
         mainActivity.getSwipeRefresh().setRefreshing(false);
+        mainActivity.setFloatingActionMenuLinks();
     }
 
     @Override
