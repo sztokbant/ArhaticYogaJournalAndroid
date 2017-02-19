@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
@@ -51,6 +52,25 @@ public class MainActivity extends Activity {
 		webView.getSettings().setJavaScriptEnabled(true);
 		webView.setWebViewClient(new RestrictedWebViewClient(this));
 		webView.setWebChromeClient(buildWebChromeClient());
+
+		appendAppVersionToUserAgent();
+	}
+
+	private void appendAppVersionToUserAgent() {
+		final String currentUserAgentString = webView.getSettings().getUserAgentString();
+
+		int versionCode = 0;
+		try {
+			versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+		} catch (NameNotFoundException e) {
+			// ignored
+		}
+
+		final String appVersion = getString(R.string.app_user_agent) + "-" + versionCode;
+
+		if (!currentUserAgentString.endsWith(appVersion)) {
+			webView.getSettings().setUserAgentString(String.format("%s %s", currentUserAgentString, appVersion));
+		}
 	}
 
 	/**
