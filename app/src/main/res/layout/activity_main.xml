@@ -49,23 +49,13 @@
         fab:menu_shadowYOffset="3dp">
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/new_practice_execution"
+            android:id="@+id/new_study"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_launcher"
+            android:src="@drawable/ic_study"
             fab:fab_colorNormal="#7B41A9"
             fab:fab_colorPressed="#592E7A"
-            fab:fab_label="Log Practice"
-            fab:fab_size="mini" />
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/new_tithing"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_dollar"
-            fab:fab_colorNormal="#7B41A9"
-            fab:fab_colorPressed="#592E7A"
-            fab:fab_label="Log Tithing"
+            fab:fab_label="Log Study"
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
@@ -79,13 +69,23 @@
             fab:fab_size="mini" />
 
         <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/new_study"
+            android:id="@+id/new_tithing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_study"
+            android:src="@drawable/ic_dollar"
             fab:fab_colorNormal="#7B41A9"
             fab:fab_colorPressed="#592E7A"
-            fab:fab_label="Log Study"
+            fab:fab_label="Log Tithing"
+            fab:fab_size="mini" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/new_practice_execution"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_launcher"
+            fab:fab_colorNormal="#7B41A9"
+            fab:fab_colorPressed="#592E7A"
+            fab:fab_label="Log Practice"
             fab:fab_size="mini" />
 
     </com.github.clans.fab.FloatingActionMenu>
