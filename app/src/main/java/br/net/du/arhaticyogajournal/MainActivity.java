@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
         populateWebView(savedInstanceState);
 
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
-        setFloatingActionMenuLinks();
+        createFloatingActionMenu();
     }
 
     /**
@@ -130,10 +130,17 @@ public class MainActivity extends Activity {
         }
     }
 
-    void setFloatingActionMenuLinks() {
+    void createFloatingActionMenu() {
+        final String webViewUrl = webView.getUrl();
+
+        if (isSignedOutUrl(webViewUrl)) {
+            floatingActionMenu.hideMenu(true);
+            return;
+        }
+
         String baseUrl;
         try {
-            final URL url = new URL(webView.getUrl());
+            final URL url = new URL(webViewUrl);
             baseUrl = String.format("%s%s", "https://", url.getHost());
         } catch (MalformedURLException e) {
             baseUrl = appDomains.getDefaultUrl();
@@ -143,6 +150,12 @@ public class MainActivity extends Activity {
         createOnClickListenerForFloatingActionButton(R.id.new_tithing, baseUrl, "tithings/new");
         createOnClickListenerForFloatingActionButton(R.id.new_service, baseUrl, "services/new");
         createOnClickListenerForFloatingActionButton(R.id.new_study, baseUrl, "studies/new");
+
+        floatingActionMenu.showMenu(true);
+    }
+
+    private boolean isSignedOutUrl(final String url) {
+        return url.endsWith("/welcome") || url.endsWith("/password_reset") || url.contains("/users/pwext/");
     }
 
     private void createOnClickListenerForFloatingActionButton(final int floatingActionButtonId, final String baseUrl, final String path) {
@@ -258,7 +271,7 @@ public class MainActivity extends Activity {
         public void onPageFinished(final WebView view, final String url) {
             super.onPageFinished(view, url);
             swipeRefresh.setRefreshing(false);
-            setFloatingActionMenuLinks();
+            createFloatingActionMenu();
         }
 
         @Override
