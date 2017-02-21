@@ -17,6 +17,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.CookieSyncManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
@@ -42,6 +43,8 @@ public class MainActivity extends Activity {
         appDomains = new AppDomains(getBaseContext());
 
         buildSwipeRefreshLayout();
+
+        CookieSyncManager.createInstance(getBaseContext());
 
         buildWebView();
         populateWebView(savedInstanceState);
@@ -270,8 +273,13 @@ public class MainActivity extends Activity {
         @Override
         public void onPageFinished(final WebView view, final String url) {
             super.onPageFinished(view, url);
-            swipeRefresh.setRefreshing(false);
+
+            // Ensures session cookie will be quickly saved from RAM to storage
+            // https://developer.android.com/reference/android/webkit/CookieSyncManager.html
+            CookieSyncManager.getInstance().sync();
+
             createFloatingActionMenu();
+            swipeRefresh.setRefreshing(false);
         }
 
         @Override
