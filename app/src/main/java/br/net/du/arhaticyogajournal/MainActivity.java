@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -31,6 +32,7 @@ public class MainActivity extends Activity {
     private AppDomains appDomains;
     private SwipeRefreshLayout swipeRefresh;
     private WebView webView;
+    private FloatingActionMenu floatingActionMenu;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -40,8 +42,11 @@ public class MainActivity extends Activity {
         appDomains = new AppDomains(getBaseContext());
 
         buildSwipeRefreshLayout();
+
         buildWebView();
         populateWebView(savedInstanceState);
+
+        floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
         setFloatingActionMenuLinks();
     }
 
@@ -67,6 +72,14 @@ public class MainActivity extends Activity {
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(new RestrictedWebViewClient());
         webView.setWebChromeClient(buildWebChromeClient());
+
+        webView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(final View view, final MotionEvent motionEvent) {
+                floatingActionMenu.close(false);
+                return false;
+            }
+        });
 
         // Disable auto-complete suggestions to prevent NullPointerException with AutofillPopup
         webView.getSettings().setSaveFormData(false);
@@ -140,8 +153,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(final View view) {
                 webView.loadUrl(url);
-                FloatingActionMenu floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
-                floatingActionMenu.close(true);
+                floatingActionMenu.close(false);
             }
         });
     }
