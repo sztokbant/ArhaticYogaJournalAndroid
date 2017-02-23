@@ -33,7 +33,12 @@ public class MainActivity extends Activity {
     private AppDomains appDomains;
     private SwipeRefreshLayout swipeRefresh;
     private WebView webView;
+
     private FloatingActionMenu floatingActionMenu;
+    private FloatingActionButton newPracticeExecution;
+    private FloatingActionButton newTithing;
+    private FloatingActionButton newService;
+    private FloatingActionButton newStudy;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -50,6 +55,11 @@ public class MainActivity extends Activity {
         populateWebView(savedInstanceState);
 
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
+        newPracticeExecution = (FloatingActionButton) findViewById(R.id.new_practice_execution);
+        newTithing = (FloatingActionButton) findViewById(R.id.new_tithing);
+        newService = (FloatingActionButton) findViewById(R.id.new_service);
+        newStudy = (FloatingActionButton) findViewById(R.id.new_study);
+
         createFloatingActionMenu();
     }
 
@@ -96,7 +106,7 @@ public class MainActivity extends Activity {
         int versionCode = 0;
         try {
             versionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
-        } catch (NameNotFoundException e) {
+        } catch (final NameNotFoundException e) {
             // ignored
         }
 
@@ -124,10 +134,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onNewIntent(final Intent intent) {
         super.onNewIntent(intent);
-        populateWebView(intent);
-    }
-
-    private void populateWebView(final Intent intent) {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             webView.loadUrl(intent.getData().toString());
         }
@@ -145,14 +151,14 @@ public class MainActivity extends Activity {
         try {
             final URL url = new URL(webViewUrl);
             baseUrl = String.format("%s%s", "https://", url.getHost());
-        } catch (MalformedURLException e) {
+        } catch (final MalformedURLException e) {
             baseUrl = appDomains.getDefaultUrl();
         }
 
-        createOnClickListenerForFloatingActionButton(R.id.new_practice_execution, baseUrl, "practice_executions/multi");
-        createOnClickListenerForFloatingActionButton(R.id.new_tithing, baseUrl, "tithings/new");
-        createOnClickListenerForFloatingActionButton(R.id.new_service, baseUrl, "services/new");
-        createOnClickListenerForFloatingActionButton(R.id.new_study, baseUrl, "studies/new");
+        createOnClickListenerForFloatingActionButton(newPracticeExecution, baseUrl, "practice_executions/multi");
+        createOnClickListenerForFloatingActionButton(newTithing, baseUrl, "tithings/new");
+        createOnClickListenerForFloatingActionButton(newService, baseUrl, "services/new");
+        createOnClickListenerForFloatingActionButton(newStudy, baseUrl, "studies/new");
 
         floatingActionMenu.showMenu(true);
     }
@@ -161,11 +167,12 @@ public class MainActivity extends Activity {
         return url.endsWith("/welcome") || url.endsWith("/password_reset") || url.contains("/users/pwext/");
     }
 
-    private void createOnClickListenerForFloatingActionButton(final int floatingActionButtonId, final String baseUrl, final String path) {
+    private void createOnClickListenerForFloatingActionButton(final FloatingActionButton floatingActionButton,
+                                                              final String baseUrl,
+                                                              final String path) {
         final String url = String.format("%s/%s", baseUrl, path);
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(floatingActionButtonId);
 
-        fab.setOnClickListener(new View.OnClickListener() {
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View view) {
                 webView.loadUrl(url);
