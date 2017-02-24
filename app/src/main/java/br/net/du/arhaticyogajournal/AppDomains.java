@@ -5,7 +5,9 @@ import android.content.res.Resources;
 
 public class AppDomains {
     private final String[] allowedDomains;
-    private final String defaultUrl;
+    private final String defaultDomain;
+
+    private String currentDomain;
 
     public AppDomains(final Context context) {
         final Resources resources = context.getResources();
@@ -16,11 +18,17 @@ public class AppDomains {
         final String publicDomain = resources.getString(R.string.public_domain);
 
         allowedDomains = new String[]{prodDomain, betaDomain, usphcDomain, publicDomain};
-        defaultUrl = "https://" + prodDomain;
+        defaultDomain = prodDomain;
+
+        currentDomain = "";
+    }
+
+    public String getDefaultDomain() {
+        return defaultDomain;
     }
 
     public String getDefaultUrl() {
-        return defaultUrl;
+        return "https://" + defaultDomain;
     }
 
     public boolean isAllowed(final String url) {
@@ -30,5 +38,17 @@ public class AppDomains {
             }
         }
         return false;
+    }
+
+    public boolean isCurrentDomain(final String webViewUrl) {
+        return !currentDomain.isEmpty() && webViewUrl.contains(currentDomain);
+    }
+
+    public void setCurrentDomain(final String currentDomain) {
+        this.currentDomain = currentDomain;
+    }
+
+    public void clearCurrentDomain() {
+        this.currentDomain = "";
     }
 }

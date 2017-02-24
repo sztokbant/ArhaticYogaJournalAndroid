@@ -35,10 +35,10 @@ public class MainActivity extends Activity {
     private WebView webView;
 
     private FloatingActionMenu floatingActionMenu;
-    private FloatingActionButton newPracticeExecution;
-    private FloatingActionButton newTithing;
-    private FloatingActionButton newService;
-    private FloatingActionButton newStudy;
+    private FloatingActionButton newPracticeExecutionButton;
+    private FloatingActionButton newTithingButton;
+    private FloatingActionButton newServiceButton;
+    private FloatingActionButton newStudyButton;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -55,10 +55,10 @@ public class MainActivity extends Activity {
         populateWebView(savedInstanceState);
 
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
-        newPracticeExecution = (FloatingActionButton) findViewById(R.id.new_practice_execution);
-        newTithing = (FloatingActionButton) findViewById(R.id.new_tithing);
-        newService = (FloatingActionButton) findViewById(R.id.new_service);
-        newStudy = (FloatingActionButton) findViewById(R.id.new_study);
+        newPracticeExecutionButton = (FloatingActionButton) findViewById(R.id.new_practice_execution);
+        newTithingButton = (FloatingActionButton) findViewById(R.id.new_tithing);
+        newServiceButton = (FloatingActionButton) findViewById(R.id.new_service);
+        newStudyButton = (FloatingActionButton) findViewById(R.id.new_study);
 
         createFloatingActionMenu();
     }
@@ -144,21 +144,29 @@ public class MainActivity extends Activity {
 
         if (isSignedOutUrl(webViewUrl)) {
             floatingActionMenu.hideMenu(true);
+            appDomains.clearCurrentDomain();
             return;
         }
 
-        String baseUrl;
-        try {
-            final URL url = new URL(webViewUrl);
-            baseUrl = String.format("%s%s", "https://", url.getHost());
-        } catch (final MalformedURLException e) {
-            baseUrl = appDomains.getDefaultUrl();
+        if (appDomains.isCurrentDomain(webViewUrl)) {
+            return;
         }
 
-        createOnClickListenerForFloatingActionButton(newPracticeExecution, baseUrl, "practice_executions/multi");
-        createOnClickListenerForFloatingActionButton(newTithing, baseUrl, "tithings/new");
-        createOnClickListenerForFloatingActionButton(newService, baseUrl, "services/new");
-        createOnClickListenerForFloatingActionButton(newStudy, baseUrl, "studies/new");
+        String currentDomain;
+        try {
+            final URL url = new URL(webViewUrl);
+            currentDomain = url.getHost();
+        } catch (final MalformedURLException e) {
+            currentDomain = appDomains.getDefaultDomain();
+        }
+
+        appDomains.setCurrentDomain(currentDomain);
+        final String baseUrl = String.format("%s%s", "https://", currentDomain);
+
+        createOnClickListenerForFloatingActionButton(newPracticeExecutionButton, baseUrl, "practice_executions/multi");
+        createOnClickListenerForFloatingActionButton(newTithingButton, baseUrl, "tithings/new");
+        createOnClickListenerForFloatingActionButton(newServiceButton, baseUrl, "services/new");
+        createOnClickListenerForFloatingActionButton(newStudyButton, baseUrl, "studies/new");
 
         floatingActionMenu.showMenu(true);
     }
