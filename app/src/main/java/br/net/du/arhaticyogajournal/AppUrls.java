@@ -3,13 +3,14 @@ package br.net.du.arhaticyogajournal;
 import android.content.Context;
 import android.content.res.Resources;
 
-public class AppDomains {
+public class AppUrls {
     private final String[] allowedDomains;
     private final String defaultDomain;
-
     private String currentDomain;
 
-    public AppDomains(final Context context) {
+    private final String[] signedOutUrlPatterns;
+
+    public AppUrls(final Context context) {
         final Resources resources = context.getResources();
 
         final String prodDomain = resources.getString(R.string.prod_domain);
@@ -19,8 +20,9 @@ public class AppDomains {
 
         allowedDomains = new String[]{prodDomain, betaDomain, usphcDomain, publicDomain};
         defaultDomain = prodDomain;
-
         currentDomain = "";
+
+        signedOutUrlPatterns = new String[]{"/welcome", "/password_reset", "/users/pwext"};
     }
 
     public String getDefaultDomain() {
@@ -32,8 +34,16 @@ public class AppDomains {
     }
 
     public boolean isAllowed(final String url) {
-        for (final String domain : allowedDomains) {
-            if (url.contains(domain)) {
+        return urlContainsAnyPattern(url, allowedDomains);
+    }
+
+    public boolean isSignedOutUrl(final String url) {
+        return urlContainsAnyPattern(url, signedOutUrlPatterns);
+    }
+
+    private boolean urlContainsAnyPattern(final String url, final String[] patterns) {
+        for (final String pattern : patterns) {
+            if (url.contains(pattern)) {
                 return true;
             }
         }

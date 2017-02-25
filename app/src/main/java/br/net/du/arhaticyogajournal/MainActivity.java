@@ -30,7 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainActivity extends Activity {
-    private AppDomains appDomains;
+    private AppUrls appUrls;
     private SwipeRefreshLayout swipeRefresh;
     private WebView webView;
 
@@ -45,7 +45,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appDomains = new AppDomains(getBaseContext());
+        appUrls = new AppUrls(getBaseContext());
 
         buildSwipeRefreshLayout();
 
@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
         } else if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
         } else {
-            webView.loadUrl(appDomains.getDefaultUrl());
+            webView.loadUrl(appUrls.getDefaultUrl());
         }
     }
 
@@ -142,13 +142,13 @@ public class MainActivity extends Activity {
     void createFloatingActionMenu() {
         final String webViewUrl = webView.getUrl();
 
-        if (isSignedOutUrl(webViewUrl)) {
+        if (appUrls.isSignedOutUrl(webViewUrl)) {
             floatingActionMenu.hideMenu(true);
-            appDomains.clearCurrentDomain();
+            appUrls.clearCurrentDomain();
             return;
         }
 
-        if (appDomains.isCurrentDomain(webViewUrl)) {
+        if (appUrls.isCurrentDomain(webViewUrl)) {
             return;
         }
 
@@ -157,10 +157,10 @@ public class MainActivity extends Activity {
             final URL url = new URL(webViewUrl);
             currentDomain = url.getHost();
         } catch (final MalformedURLException e) {
-            currentDomain = appDomains.getDefaultDomain();
+            currentDomain = appUrls.getDefaultDomain();
         }
 
-        appDomains.setCurrentDomain(currentDomain);
+        appUrls.setCurrentDomain(currentDomain);
         final String baseUrl = String.format("%s%s", "https://", currentDomain);
 
         createOnClickListenerForFloatingActionButton(newPracticeExecutionButton, baseUrl, "practice_executions/multi");
@@ -169,10 +169,6 @@ public class MainActivity extends Activity {
         createOnClickListenerForFloatingActionButton(newStudyButton, baseUrl, "studies/new");
 
         floatingActionMenu.showMenu(true);
-    }
-
-    private boolean isSignedOutUrl(final String url) {
-        return url.endsWith("/welcome") || url.endsWith("/password_reset") || url.contains("/users/pwext/");
     }
 
     private void createOnClickListenerForFloatingActionButton(final FloatingActionButton floatingActionButton,
@@ -244,7 +240,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed by AppDomains. It will
+     * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed by AppUrls. It will
      * show SwipeRefreshLayout progress spinner when loading URL.
      * <p>
      * http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
@@ -269,7 +265,7 @@ public class MainActivity extends Activity {
                 view.getContext().startActivity(emailIntent);
             } else if (url.startsWith(WebView.SCHEME_TEL)) {
                 // prevents accidental clicks on numbers to be interpreted as "tel:"
-            } else if (appDomains.isAllowed(url)) {
+            } else if (appUrls.isAllowed(url)) {
                 view.loadUrl(url);
             } else {
                 final Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
