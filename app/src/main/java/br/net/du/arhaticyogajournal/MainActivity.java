@@ -23,22 +23,14 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 public class MainActivity extends Activity {
     private AppUrls appUrls;
     private SwipeRefreshLayout swipeRefresh;
     private WebView webView;
 
-    private FloatingActionMenu floatingActionMenu;
-    private FloatingActionButton newPracticeExecutionButton;
-    private FloatingActionButton newTithingButton;
-    private FloatingActionButton newServiceButton;
-    private FloatingActionButton newStudyButton;
+    private FloatingActionMenuManager floatingActionMenuManager;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -54,13 +46,10 @@ public class MainActivity extends Activity {
         buildWebView();
         populateWebView(savedInstanceState);
 
-        floatingActionMenu = (FloatingActionMenu) findViewById(R.id.floating_action_menu);
-        newPracticeExecutionButton = (FloatingActionButton) findViewById(R.id.new_practice_execution);
-        newTithingButton = (FloatingActionButton) findViewById(R.id.new_tithing);
-        newServiceButton = (FloatingActionButton) findViewById(R.id.new_service);
-        newStudyButton = (FloatingActionButton) findViewById(R.id.new_study);
-
-        createFloatingActionMenu();
+        floatingActionMenuManager =
+                new FloatingActionMenuManager((FloatingActionMenu) findViewById(R.id.floating_action_menu),
+                        webView,
+                        appUrls);
     }
 
     /**
@@ -89,7 +78,7 @@ public class MainActivity extends Activity {
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                floatingActionMenu.close(false);
+                floatingActionMenuManager.closeMenu(false);
                 return false;
             }
         });
@@ -137,52 +126,6 @@ public class MainActivity extends Activity {
         if (Intent.ACTION_VIEW.equals(intent.getAction())) {
             webView.loadUrl(intent.getData().toString());
         }
-    }
-
-    void createFloatingActionMenu() {
-        final String webViewUrl = webView.getUrl();
-
-        if (appUrls.isSignedOutUrl(webViewUrl)) {
-            floatingActionMenu.hideMenu(true);
-            appUrls.clearCurrentDomain();
-            return;
-        }
-
-        if (appUrls.isCurrentDomain(webViewUrl)) {
-            return;
-        }
-
-        String currentDomain;
-        try {
-            final URL url = new URL(webViewUrl);
-            currentDomain = url.getHost();
-        } catch (final MalformedURLException e) {
-            currentDomain = appUrls.getDefaultDomain();
-        }
-
-        appUrls.setCurrentDomain(currentDomain);
-        final String baseUrl = String.format("%s%s", "https://", currentDomain);
-
-        createOnClickListenerForFloatingActionButton(newPracticeExecutionButton, baseUrl, "practice_executions/multi");
-        createOnClickListenerForFloatingActionButton(newTithingButton, baseUrl, "tithings/new");
-        createOnClickListenerForFloatingActionButton(newServiceButton, baseUrl, "services/new");
-        createOnClickListenerForFloatingActionButton(newStudyButton, baseUrl, "studies/new");
-
-        floatingActionMenu.showMenu(true);
-    }
-
-    private void createOnClickListenerForFloatingActionButton(final FloatingActionButton floatingActionButton,
-                                                              final String baseUrl,
-                                                              final String path) {
-        final String url = String.format("%s/%s", baseUrl, path);
-
-        floatingActionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(final View view) {
-                webView.loadUrl(url);
-                floatingActionMenu.close(false);
-            }
-        });
     }
 
     /**
@@ -289,7 +232,7 @@ public class MainActivity extends Activity {
             // https://developer.android.com/reference/android/webkit/CookieSyncManager.html
             CookieSyncManager.getInstance().sync();
 
-            createFloatingActionMenu();
+            floatingActionMenuManager.refresh();
             swipeRefresh.setRefreshing(false);
         }
 
