@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         webView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                floatingActionMenuManager.closeMenu(false);
+                floatingActionMenuManager.closeMenu();
                 return false;
             }
         });
@@ -164,9 +164,12 @@ public class MainActivity extends Activity {
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent event) {
         // Check if the key event was the Back button and if there's history
-        if ((keyCode == KeyEvent.KEYCODE_BACK) && webView.canGoBack()) {
-            webView.goBack();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            floatingActionMenuManager.closeMenu();
+            if (webView.canGoBack()) {
+                webView.goBack();
+                return true;
+            }
         }
         // If it wasn't the Back key or there's no web page history, bubble up to the default system behavior (probably
         // exit the activity)

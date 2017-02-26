@@ -80,7 +80,7 @@ public class FloatingActionMenuManager {
         });
     }
 
-    public void closeMenu(final boolean animate) {
-        floatingActionMenu.close(animate);
+    public void closeMenu() {
+        floatingActionMenu.close(false);
     }
 }
