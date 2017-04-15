@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.net.ConnectivityManager;
 import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -244,23 +243,16 @@ public class MainActivity extends Activity {
                                     final String failingUrl) {
             super.onReceivedError(view, errorCode, description, failingUrl);
             final Context context = view.getContext();
-            if (!isConnected(context)) {
-                final Resources resources = context.getResources();
-                new AlertDialog.Builder(context).setTitle(resources.getString(R.string.error_dialog_title))
-                        .setMessage(resources.getString(R.string.error_dialog_message))
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        }).setIcon(android.R.drawable.ic_dialog_alert).show();
-            }
-        }
-
-        private boolean isConnected(final Context context) {
-            final ConnectivityManager connectivityManager = (ConnectivityManager) context
-                    .getSystemService(CONNECTIVITY_SERVICE);
-            return connectivityManager != null && connectivityManager.getActiveNetworkInfo() != null
-                    && connectivityManager.getActiveNetworkInfo().isAvailable()
-                    && connectivityManager.getActiveNetworkInfo().isConnected();
+            final Resources resources = context.getResources();
+            new AlertDialog.Builder(context)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(resources.getString(R.string.connection_error_title))
+                    .setMessage(resources.getString(R.string.connection_error_message))
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .show();
         }
     }
 }
