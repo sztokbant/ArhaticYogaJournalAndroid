@@ -209,7 +209,7 @@ public class MainActivity extends Activity {
 
                 view.getContext().startActivity(emailIntent);
             } else if (url.startsWith(WebView.SCHEME_TEL)) {
-                // prevents accidental clicks on numbers to be interpreted as "tel:"
+                // prevents accidental clicks on numbers from being interpreted as "tel:"
             } else if (appUrls.isAllowed(url)) {
                 view.loadUrl(url);
             } else {
