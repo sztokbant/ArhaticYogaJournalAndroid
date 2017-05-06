@@ -85,10 +85,10 @@ public class MainActivity extends Activity {
         // Disable auto-complete suggestions to prevent NullPointerException with AutofillPopup
         webView.getSettings().setSaveFormData(false);
 
-        appendAppVersionToUserAgent();
+        appendAppInfoToUserAgent();
     }
 
-    private void appendAppVersionToUserAgent() {
+    private void appendAppInfoToUserAgent() {
         final String currentUserAgentString = webView.getSettings().getUserAgentString();
 
         int versionCode = 0;
@@ -98,10 +98,10 @@ public class MainActivity extends Activity {
             // ignored
         }
 
-        final String appVersion = getString(R.string.app_user_agent) + "-" + versionCode;
+        final String appInfo = getString(R.string.app_user_agent) + "-" + versionCode;
 
-        if (!currentUserAgentString.endsWith(appVersion)) {
-            webView.getSettings().setUserAgentString(String.format("%s %s", currentUserAgentString, appVersion));
+        if (!currentUserAgentString.endsWith(appInfo)) {
+            webView.getSettings().setUserAgentString(String.format("%s %s", currentUserAgentString, appInfo));
         }
     }
 
