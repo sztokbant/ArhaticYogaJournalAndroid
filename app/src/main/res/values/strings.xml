@@ -2,6 +2,7 @@
 <resources>
 
     <string name="app_name">Arhatic Yoga Journal</string>
+    <string name="app_name_short">AY Journal</string>
     <string name="app_user_agent">ArhaticYogaJournalAndroid</string>
     <string name="default_email_subject">"Arhatic Yoga Journal Android"</string>
 
