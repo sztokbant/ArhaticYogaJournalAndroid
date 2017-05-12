@@ -241,7 +241,6 @@ public class MainActivity extends Activity {
         @Override
         public void onReceivedError(final WebView view, final int errorCode, final String description,
                                     final String failingUrl) {
-            super.onReceivedError(view, errorCode, description, failingUrl);
             final Context context = view.getContext();
             final Resources resources = context.getResources();
             new AlertDialog.Builder(context)

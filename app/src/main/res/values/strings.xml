@@ -6,8 +6,8 @@
     <string name="app_user_agent">ArhaticYogaJournalAndroid</string>
     <string name="default_email_subject">"Arhatic Yoga Journal Android"</string>
 
-    <string name="connection_error_title">Connection Error</string>
-    <string name="connection_error_message">Please, check your Internet connection and swipe down to try again.</string>
+    <string name="connection_error_title">Error</string>
+    <string name="connection_error_message">The Internet connection appears to be offline. Swipe down to retry.</string>
 
     <string name="prod_domain">arhaticnet.herokuapp.com</string>
     <string name="beta_domain">ayj-beta.herokuapp.com</string>
