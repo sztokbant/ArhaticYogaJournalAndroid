@@ -15,10 +15,11 @@ public class AppUrls {
 
         final String prodDomain = resources.getString(R.string.prod_domain);
         final String betaDomain = resources.getString(R.string.beta_domain);
+        final String gammaDomain = resources.getString(R.string.gamma_domain);
         final String usphcDomain = resources.getString(R.string.usphc_domain);
         final String publicDomain = resources.getString(R.string.public_domain);
 
-        allowedDomains = new String[]{prodDomain, betaDomain, usphcDomain, publicDomain};
+        allowedDomains = new String[]{prodDomain, betaDomain, gammaDomain, usphcDomain, publicDomain};
         defaultDomain = prodDomain;
         currentDomain = "";
 

@@ -11,6 +11,7 @@
 
     <string name="prod_domain">arhaticnet.herokuapp.com</string>
     <string name="beta_domain">ayj-beta.herokuapp.com</string>
+    <string name="gamma_domain">ayj-gamma.herokuapp.com</string>
     <string name="usphc_domain">ayjournal.herokuapp.com</string>
     <string name="public_domain">arhaticyogajournal.com</string>
     <string name="www_public_domain">www.arhaticyogajournal.com</string>

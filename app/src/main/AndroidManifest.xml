@@ -31,6 +31,7 @@
                 <data android:scheme="https" />
                 <data android:host="@string/prod_domain" />
                 <data android:host="@string/beta_domain" />
+                <data android:host="@string/gamma_domain" />
                 <data android:host="@string/usphc_domain" />
             </intent-filter>
             <intent-filter>
