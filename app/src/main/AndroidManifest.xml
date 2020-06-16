@@ -41,6 +41,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="http" />
+                <data android:scheme="https" />
                 <data android:host="@string/public_domain" />
                 <data android:host="@string/www_public_domain" />
             </intent-filter>

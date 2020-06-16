@@ -63,9 +63,6 @@ public class AppUrlsTest {
 
     private void mockResources() {
         when(resources.getString(R.string.prod_domain)).thenReturn(PROD_DOMAIN);
-        when(resources.getString(R.string.beta_domain)).thenReturn(BETA_DOMAIN);
-        when(resources.getString(R.string.gamma_domain)).thenReturn(GAMMA_DOMAIN);
-        when(resources.getString(R.string.usphc_domain)).thenReturn(USPHC_DOMAIN);
         when(resources.getString(R.string.public_domain)).thenReturn(PUBLIC_DOMAIN);
     }
 
@@ -74,6 +71,12 @@ public class AppUrlsTest {
 
         when(editor.putString(anyString(), anyString())).thenReturn(editor);
         when(sharedPreferences.edit()).thenReturn(editor);
+    }
+
+    @Test
+    public void isAllowed_ayjSomething_true() {
+        assertTrue(appUrls.isAllowed("https://ayjsomething.herokuapp.com"));
+        assertTrue(appUrls.isAllowed("https://ayj-something.herokuapp.com"));
     }
 
     @Test
@@ -120,6 +123,18 @@ public class AppUrlsTest {
     }
 
     @Test
+    public void isAllowed_somethingAyj_false() {
+        assertFalse(appUrls.isAllowed("https://somethingayj.herokuapp.com"));
+        assertFalse(appUrls.isAllowed("https://something-ayj.herokuapp.com"));
+        assertFalse(appUrls.isAllowed("https://something-ayj-something.herokuapp.com"));
+    }
+
+    @Test
+    public void isAllowed_ayj_false() {
+        assertFalse(appUrls.isAllowed("https://ayj.herokuapp.com"));
+    }
+
+    @Test
     public void isSignedOutUrl_baseUrlAndStats_false() {
         assertFalse(appUrls.isSignedOutUrl(PROD_URL));
         assertFalse(appUrls.isSignedOutUrl(PROD_URL + "/stats"));
@@ -133,7 +148,8 @@ public class AppUrlsTest {
 
     @Test
     public void isSignedOutUrl_pwext_true() {
-        assertTrue(appUrls.isSignedOutUrl(PROD_URL + "/users/pwext/1a2b7842207de53103d01fd8b54d7fda4d5bbc52e048532ef8c0fbeadc50edd0"));
+        assertTrue(appUrls.isSignedOutUrl(PROD_URL + "/users/pwext" +
+                "/1a2b7842207de53103d01fd8b54d7fda4d5bbc52e048532ef8c0fbeadc50edd0"));
     }
 
     @Test

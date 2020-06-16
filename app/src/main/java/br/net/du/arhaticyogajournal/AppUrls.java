@@ -4,8 +4,14 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 public class AppUrls {
     private static final String CURRENT_DOMAIN_KEY = "br.net.du.arhaticyogajournal.currentDomain";
+
+    private static final String GENERIC_DOMAIN_PREFIX = "ayj";
+    private static final String GENERIC_DOMAIN_SUFFIX = ".herokuapp.com";
 
     private final String[] allowedDomains;
     private String currentDomain;
@@ -18,12 +24,9 @@ public class AppUrls {
         final Resources resources = context.getResources();
 
         final String prodDomain = resources.getString(R.string.prod_domain);
-        final String betaDomain = resources.getString(R.string.beta_domain);
-        final String gammaDomain = resources.getString(R.string.gamma_domain);
-        final String usphcDomain = resources.getString(R.string.usphc_domain);
         final String publicDomain = resources.getString(R.string.public_domain);
 
-        allowedDomains = new String[]{prodDomain, betaDomain, gammaDomain, usphcDomain, publicDomain};
+        allowedDomains = new String[]{prodDomain, publicDomain};
 
         sharedPreferences = context.getSharedPreferences(CURRENT_DOMAIN_KEY, Context.MODE_PRIVATE);
 
@@ -44,7 +47,21 @@ public class AppUrls {
     }
 
     public boolean isAllowed(final String url) {
-        return urlContainsAnyPattern(url, allowedDomains);
+        return urlContainsAnyPattern(url, allowedDomains) || isAllowedGeneric(url);
+    }
+
+    private boolean isAllowedGeneric(final String stringUrl) {
+        String domain;
+        try {
+            final URL url = new URL(stringUrl);
+            domain = url.getHost();
+        } catch (final MalformedURLException e) {
+            return false;
+        }
+
+        return domain.startsWith(GENERIC_DOMAIN_PREFIX) &&
+                domain.endsWith(GENERIC_DOMAIN_SUFFIX) &&
+                domain.length() > GENERIC_DOMAIN_PREFIX.length() + GENERIC_DOMAIN_SUFFIX.length();
     }
 
     public boolean isSignedOutUrl(final String url) {
