@@ -106,7 +106,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * Populates webView's contents, either from Intent (external link), savedInstanceState or default URL.
+     * Populates webView's contents, either from Intent (external link), savedInstanceState or current URL.
      */
     private void populateWebView(final Bundle savedInstanceState) {
         final Intent intent = getIntent();
@@ -115,7 +115,7 @@ public class MainActivity extends Activity {
         } else if (savedInstanceState != null) {
             webView.restoreState(savedInstanceState);
         } else {
-            webView.loadUrl(appUrls.getDefaultUrl());
+            webView.loadUrl(appUrls.getCurrentUrl());
         }
     }
 

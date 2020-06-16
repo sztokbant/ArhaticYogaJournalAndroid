@@ -31,39 +31,41 @@ public class FloatingActionMenuManager {
         newServiceButton = (FloatingActionButton) floatingActionMenu.findViewById(R.id.new_service);
         newStudyButton = (FloatingActionButton) floatingActionMenu.findViewById(R.id.new_study);
 
-        refresh();
+        updateCurrentDomain(webView.getUrl());
     }
 
     public void refresh() {
         final String webViewUrl = webView.getUrl();
 
+        if (!appUrls.isCurrentDomain(webViewUrl)) {
+            updateCurrentDomain(webViewUrl);
+        }
+
         if (appUrls.isSignedOutUrl(webViewUrl)) {
-            floatingActionMenu.hideMenu(true);
-            appUrls.clearCurrentDomain();
-            return;
+            floatingActionMenu.hideMenu(false);
+        } else {
+            floatingActionMenu.showMenu(true);
         }
+    }
 
-        if (appUrls.isCurrentDomain(webViewUrl)) {
-            return;
-        }
-
-        String currentDomain;
+    private void updateCurrentDomain(final String webViewUrl) {
+        String loadedDomain;
         try {
             final URL url = new URL(webViewUrl);
-            currentDomain = url.getHost();
+            loadedDomain = url.getHost();
+            if (!appUrls.getCurrentDomain().equals(loadedDomain)) {
+                appUrls.setCurrentDomain(loadedDomain);
+            }
         } catch (final MalformedURLException e) {
-            currentDomain = appUrls.getDefaultDomain();
+            loadedDomain = appUrls.getCurrentDomain();
         }
 
-        appUrls.setCurrentDomain(currentDomain);
-        final String baseUrl = String.format("%s%s", "https://", currentDomain);
+        final String baseUrl = appUrls.getCurrentUrl();
 
         createOnClickListenerForFloatingActionButton(newPracticeExecutionButton, baseUrl, "practice_executions/multi");
         createOnClickListenerForFloatingActionButton(newTithingButton, baseUrl, "tithings/new");
         createOnClickListenerForFloatingActionButton(newServiceButton, baseUrl, "services/new");
         createOnClickListenerForFloatingActionButton(newStudyButton, baseUrl, "studies/new");
-
-        floatingActionMenu.showMenu(true);
     }
 
     private void createOnClickListenerForFloatingActionButton(final FloatingActionButton floatingActionButton,

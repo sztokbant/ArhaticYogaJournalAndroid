@@ -1,14 +1,18 @@
 package br.net.du.arhaticyogajournal;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 
 public class AppUrls {
+    private static final String CURRENT_DOMAIN_KEY = "br.net.du.arhaticyogajournal.currentDomain";
+
     private final String[] allowedDomains;
-    private final String defaultDomain;
     private String currentDomain;
 
     private final String[] signedOutUrlPatterns;
+
+    private final SharedPreferences sharedPreferences;
 
     public AppUrls(final Context context) {
         final Resources resources = context.getResources();
@@ -20,18 +24,23 @@ public class AppUrls {
         final String publicDomain = resources.getString(R.string.public_domain);
 
         allowedDomains = new String[]{prodDomain, betaDomain, gammaDomain, usphcDomain, publicDomain};
-        defaultDomain = prodDomain;
-        currentDomain = "";
+
+        sharedPreferences = context.getSharedPreferences(CURRENT_DOMAIN_KEY, Context.MODE_PRIVATE);
+
+        currentDomain = sharedPreferences.getString(CURRENT_DOMAIN_KEY, null);
+        if (currentDomain == null) {
+            setCurrentDomain(prodDomain);
+        }
 
         signedOutUrlPatterns = new String[]{"/welcome", "/password_reset", "/users/pwext"};
     }
 
-    public String getDefaultDomain() {
-        return defaultDomain;
+    public String getCurrentDomain() {
+        return currentDomain;
     }
 
-    public String getDefaultUrl() {
-        return "https://" + defaultDomain;
+    public String getCurrentUrl() {
+        return String.format("%s%s", "https://", currentDomain);
     }
 
     public boolean isAllowed(final String url) {
@@ -57,9 +66,6 @@ public class AppUrls {
 
     public void setCurrentDomain(final String currentDomain) {
         this.currentDomain = currentDomain;
-    }
-
-    public void clearCurrentDomain() {
-        this.currentDomain = "";
+        sharedPreferences.edit().putString(CURRENT_DOMAIN_KEY, currentDomain).apply();
     }
 }
