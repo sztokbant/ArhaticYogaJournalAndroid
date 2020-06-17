@@ -36,7 +36,7 @@ public class AppUrls {
             setCurrentDomain(prodDomain);
         }
 
-        signedOutUrlPatterns = new String[]{"/welcome", "/password_reset", "/users/pwext"};
+        signedOutUrlPatterns = new String[]{"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
     }
 
     public String getCurrentDomain() {
