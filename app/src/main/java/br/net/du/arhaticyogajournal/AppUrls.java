@@ -43,6 +43,11 @@ public class AppUrls {
         return currentDomain;
     }
 
+    public void setCurrentDomain(final String currentDomain) {
+        this.currentDomain = currentDomain;
+        appPreferences.edit().putString(CURRENT_DOMAIN_KEY, currentDomain).apply();
+    }
+
     public String getCurrentUrl() {
         return String.format("%s%s", "https://", currentDomain);
     }
@@ -80,10 +85,5 @@ public class AppUrls {
 
     public boolean isCurrentDomain(final String webViewUrl) {
         return !currentDomain.isEmpty() && webViewUrl.contains(currentDomain);
-    }
-
-    public void setCurrentDomain(final String currentDomain) {
-        this.currentDomain = currentDomain;
-        appPreferences.edit().putString(CURRENT_DOMAIN_KEY, currentDomain).apply();
     }
 }
