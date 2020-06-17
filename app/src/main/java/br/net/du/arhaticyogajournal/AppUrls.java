@@ -8,7 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class AppUrls {
-    private static final String CURRENT_DOMAIN_KEY = "br.net.du.arhaticyogajournal.currentDomain";
+    private static final String PACKAGE_NAME = "br.net.du.arhaticyogajournal";
+    private static final String CURRENT_DOMAIN_KEY = "currentDomain";
 
     private static final String GENERIC_DOMAIN_PREFIX = "ayj";
     private static final String GENERIC_DOMAIN_SUFFIX = ".herokuapp.com";
@@ -18,7 +19,7 @@ public class AppUrls {
 
     private final String[] signedOutUrlPatterns;
 
-    private final SharedPreferences sharedPreferences;
+    private final SharedPreferences appPreferences;
 
     public AppUrls(final Context context) {
         final Resources resources = context.getResources();
@@ -28,9 +29,9 @@ public class AppUrls {
 
         allowedDomains = new String[]{prodDomain, publicDomain};
 
-        sharedPreferences = context.getSharedPreferences(CURRENT_DOMAIN_KEY, Context.MODE_PRIVATE);
+        appPreferences = context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE);
 
-        currentDomain = sharedPreferences.getString(CURRENT_DOMAIN_KEY, null);
+        currentDomain = appPreferences.getString(CURRENT_DOMAIN_KEY, null);
         if (currentDomain == null) {
             setCurrentDomain(prodDomain);
         }
@@ -83,6 +84,6 @@ public class AppUrls {
 
     public void setCurrentDomain(final String currentDomain) {
         this.currentDomain = currentDomain;
-        sharedPreferences.edit().putString(CURRENT_DOMAIN_KEY, currentDomain).apply();
+        appPreferences.edit().putString(CURRENT_DOMAIN_KEY, currentDomain).apply();
     }
 }

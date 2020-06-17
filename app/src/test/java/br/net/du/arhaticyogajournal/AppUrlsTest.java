@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppUrlsTest {
-    private static final String CURRENT_DOMAIN_KEY = "br.net.du.arhaticyogajournal.currentDomain";
+    private static final String CURRENT_DOMAIN_KEY = "currentDomain";
 
     private static final String PROD_DOMAIN = "arhaticnet.herokuapp.com";
     private static final String BETA_DOMAIN = "ayj-beta.herokuapp.com";
