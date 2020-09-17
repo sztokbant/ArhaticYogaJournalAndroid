@@ -12,7 +12,6 @@ import android.graphics.Bitmap;
 import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +20,7 @@ import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.clans.fab.FloatingActionMenu;
 
 public class MainActivity extends Activity {
