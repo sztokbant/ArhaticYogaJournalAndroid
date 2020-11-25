@@ -44,7 +44,7 @@ public class FloatingActionMenuManager {
         if (appUrls.isSignedOutUrl(webViewUrl)) {
             floatingActionMenu.hideMenu(false);
         } else {
-            floatingActionMenu.showMenu(true);
+            floatingActionMenu.showMenu(false);
         }
     }
 

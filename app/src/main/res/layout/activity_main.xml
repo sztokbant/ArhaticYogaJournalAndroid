@@ -6,9 +6,9 @@
     tools:context="${relativePackage}.${activityClass}">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                           android:id="@+id/swiperefresh"
-                                                           android:layout_width="fill_parent"
-                                                           android:layout_height="fill_parent">
+        android:id="@+id/swiperefresh"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <WebView
             android:id="@+id/webview"
@@ -25,6 +25,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="10dp"
         android:layout_marginRight="10dp"
+        android:visibility="invisible"
         fab:menu_animationDelayPerItem="14"
         fab:menu_colorNormal="#7B41A9"
         fab:menu_colorPressed="#592E7A"
