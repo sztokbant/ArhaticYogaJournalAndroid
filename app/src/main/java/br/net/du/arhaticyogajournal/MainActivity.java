@@ -32,6 +32,9 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        // https://medium.com/swlh/splash-screen-in-android-8ab250e40190
+        setTheme(R.style.CustomTheme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
