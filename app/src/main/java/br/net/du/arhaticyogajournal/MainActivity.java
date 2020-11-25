@@ -18,6 +18,8 @@ import android.view.View;
 import android.webkit.CookieSyncManager;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -196,7 +198,9 @@ public class MainActivity extends Activity {
     private class RestrictedWebViewClient extends WebViewClient {
 
         @Override
-        public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
+        public boolean shouldOverrideUrlLoading(final WebView view, final WebResourceRequest request) {
+            final String url = request.getUrl().toString();
+
             if (url.startsWith(WebView.SCHEME_MAILTO)) {
                 final MailTo mailto = MailTo.parse(url);
 
@@ -234,6 +238,7 @@ public class MainActivity extends Activity {
 
             // Ensures session cookie will be quickly saved from RAM to storage
             // https://developer.android.com/reference/android/webkit/CookieSyncManager.html
+            // UPDATE 2020-11-25: Although deprecated, this is still needed in order to properly handle logout.
             CookieSyncManager.getInstance().sync();
 
             floatingActionMenuManager.refresh();
@@ -241,19 +246,21 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public void onReceivedError(final WebView view, final int errorCode, final String description,
-                                    final String failingUrl) {
+        public void onReceivedError(final WebView view,
+                                    final WebResourceRequest request,
+                                    final WebResourceError error) {
             final Context context = view.getContext();
             final Resources resources = context.getResources();
-            new AlertDialog.Builder(context)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setTitle(resources.getString(R.string.connection_error_title))
-                    .setMessage(resources.getString(R.string.connection_error_message))
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                        }
-                    })
-                    .show();
+            new AlertDialog.Builder(context).setIcon(android.R.drawable.ic_dialog_alert)
+                                            .setTitle(resources.getString(R.string.connection_error_title))
+                                            .setMessage(resources.getString(R.string.connection_error_message))
+                                            .setPositiveButton(android.R.string.ok,
+                                                               new DialogInterface.OnClickListener() {
+                                                                   public void onClick(DialogInterface dialog,
+                                                                                       int which) {
+                                                                   }
+                                                               })
+                                            .show();
         }
     }
 }
