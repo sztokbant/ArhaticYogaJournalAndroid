@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
@@ -156,11 +157,6 @@ public class MainActivity extends Activity {
 
                 return true;
             }
-
-            @Override
-            public void onProgressChanged(WebView view, int newProgress) {
-                swipeRefresh.setRefreshing(true);
-            }
         };
     }
 
@@ -193,7 +189,8 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed by AppUrls.
+     * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed by AppUrls. It will
+     * show SwipeRefreshLayout progress spinner when loading URL.
      * <p>
      * http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
      * http://stackoverflow.com/questions/17994750/open-external-links-in-the-browser-with-android-webview
@@ -227,6 +224,12 @@ public class MainActivity extends Activity {
             }
 
             return true;
+        }
+
+        @Override
+        public void onPageStarted(final WebView view, final String url, final Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+            swipeRefresh.setRefreshing(true);
         }
 
         @Override
