@@ -50,7 +50,8 @@ public class MainActivity extends Activity {
         populateWebView(savedInstanceState);
 
         floatingActionMenuManager =
-                new FloatingActionMenuManager((FloatingActionMenu) findViewById(R.id.floating_action_menu),
+                new FloatingActionMenuManager(
+                        (FloatingActionMenu) findViewById(R.id.floating_action_menu),
                         webView,
                         appUrls);
     }
@@ -61,13 +62,14 @@ public class MainActivity extends Activity {
      */
     private void buildSwipeRefreshLayout() {
         swipeRefresh = (SwipeRefreshLayout) findViewById(R.id.swiperefresh);
-        swipeRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                // not calling reload() as it reposts a page if the request was POST
-                webView.loadUrl(webView.getUrl());
-            }
-        });
+        swipeRefresh.setOnRefreshListener(
+                new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        // not calling reload() as it reposts a page if the request was POST
+                        webView.loadUrl(webView.getUrl());
+                    }
+                });
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -78,13 +80,14 @@ public class MainActivity extends Activity {
         webView.setWebViewClient(new RestrictedWebViewClient());
         webView.setWebChromeClient(buildWebChromeClient());
 
-        webView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(final View view, final MotionEvent motionEvent) {
-                floatingActionMenuManager.closeMenu();
-                return false;
-            }
-        });
+        webView.setOnTouchListener(
+                new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(final View view, final MotionEvent motionEvent) {
+                        floatingActionMenuManager.closeMenu();
+                        return false;
+                    }
+                });
 
         // Disable auto-complete suggestions to prevent NullPointerException with AutofillPopup
         webView.getSettings().setSaveFormData(false);
@@ -105,12 +108,14 @@ public class MainActivity extends Activity {
         final String appInfo = getString(R.string.app_user_agent) + "-" + versionCode;
 
         if (!currentUserAgentString.endsWith(appInfo)) {
-            webView.getSettings().setUserAgentString(String.format("%s %s", currentUserAgentString, appInfo));
+            webView.getSettings()
+                    .setUserAgentString(String.format("%s %s", currentUserAgentString, appInfo));
         }
     }
 
     /**
-     * Populates webView's contents, either from Intent (external link), savedInstanceState or current URL.
+     * Populates webView's contents, either from Intent (external link), savedInstanceState or
+     * current URL.
      */
     private void populateWebView(final Bundle savedInstanceState) {
         final Intent intent = getIntent();
@@ -141,19 +146,34 @@ public class MainActivity extends Activity {
         return new WebChromeClient() {
 
             @Override
-            public boolean onJsConfirm(final WebView view, final String url, final String message, final JsResult result) {
-                new AlertDialog.Builder(MainActivity.this).setTitle(R.string.app_name).setMessage(message)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog, final int which) {
-                                result.confirm();
-                            }
-                        }).setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(final DialogInterface dialog, final int which) {
-                        result.cancel();
-                    }
-                }).create().show();
+            public boolean onJsConfirm(
+                    final WebView view,
+                    final String url,
+                    final String message,
+                    final JsResult result) {
+                new AlertDialog.Builder(MainActivity.this)
+                        .setTitle(R.string.app_name)
+                        .setMessage(message)
+                        .setPositiveButton(
+                                android.R.string.ok,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(
+                                            final DialogInterface dialog, final int which) {
+                                        result.confirm();
+                                    }
+                                })
+                        .setNegativeButton(
+                                android.R.string.cancel,
+                                new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(
+                                            final DialogInterface dialog, final int which) {
+                                        result.cancel();
+                                    }
+                                })
+                        .create()
+                        .show();
 
                 return true;
             }
@@ -174,14 +194,13 @@ public class MainActivity extends Activity {
                 return true;
             }
         }
-        // If it wasn't the Back key or there's no web page history, bubble up to the default system behavior (probably
+        // If it wasn't the Back key or there's no web page history, bubble up to the default system
+        // behavior (probably
         // exit the activity)
         return super.onKeyDown(keyCode, event);
     }
 
-    /**
-     * Saves WebView state in order to prevent it from losing context on screen rotation
-     */
+    /** Saves WebView state in order to prevent it from losing context on screen rotation */
     @Override
     protected void onSaveInstanceState(final Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -189,16 +208,17 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed by AppUrls. It will
-     * show SwipeRefreshLayout progress spinner when loading URL.
-     * <p>
-     * http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
+     * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed
+     * by AppUrls. It will show SwipeRefreshLayout progress spinner when loading URL.
+     *
+     * <p>http://stackoverflow.com/questions/3623137/howto-handle-mailto-in-android-webview
      * http://stackoverflow.com/questions/17994750/open-external-links-in-the-browser-with-android-webview
      */
     private class RestrictedWebViewClient extends WebViewClient {
 
         @Override
-        public boolean shouldOverrideUrlLoading(final WebView view, final WebResourceRequest request) {
+        public boolean shouldOverrideUrlLoading(
+                final WebView view, final WebResourceRequest request) {
             final String url = request.getUrl().toString();
 
             if (url.startsWith(WebView.SCHEME_MAILTO)) {
@@ -206,10 +226,14 @@ public class MainActivity extends Activity {
 
                 final Intent emailIntent = new Intent(Intent.ACTION_SEND);
                 emailIntent.setType("message/rfc822");
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{mailto.getTo()});
+                emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[] {mailto.getTo()});
                 emailIntent.putExtra(Intent.EXTRA_CC, mailto.getCc());
-                final String subject = mailto.getSubject() != null ? mailto.getSubject() : view.getContext().getResources()
-                        .getString(R.string.default_email_subject);
+                final String subject =
+                        mailto.getSubject() != null
+                                ? mailto.getSubject()
+                                : view.getContext()
+                                        .getResources()
+                                        .getString(R.string.default_email_subject);
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, subject);
                 emailIntent.putExtra(Intent.EXTRA_TEXT, mailto.getBody());
 
@@ -238,7 +262,8 @@ public class MainActivity extends Activity {
 
             // Ensures session cookie will be quickly saved from RAM to storage
             // https://developer.android.com/reference/android/webkit/CookieSyncManager.html
-            // UPDATE 2020-11-25: Although deprecated, this is still needed in order to properly handle logout.
+            // UPDATE 2020-11-25: Although deprecated, this is still needed in order to properly
+            // handle logout.
             CookieSyncManager.getInstance().sync();
 
             floatingActionMenuManager.refresh();
@@ -246,21 +271,22 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        public void onReceivedError(final WebView view,
-                                    final WebResourceRequest request,
-                                    final WebResourceError error) {
+        public void onReceivedError(
+                final WebView view,
+                final WebResourceRequest request,
+                final WebResourceError error) {
             final Context context = view.getContext();
             final Resources resources = context.getResources();
-            new AlertDialog.Builder(context).setIcon(android.R.drawable.ic_dialog_alert)
-                                            .setTitle(resources.getString(R.string.connection_error_title))
-                                            .setMessage(resources.getString(R.string.connection_error_message))
-                                            .setPositiveButton(android.R.string.ok,
-                                                               new DialogInterface.OnClickListener() {
-                                                                   public void onClick(DialogInterface dialog,
-                                                                                       int which) {
-                                                                   }
-                                                               })
-                                            .show();
+            new AlertDialog.Builder(context)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setTitle(resources.getString(R.string.connection_error_title))
+                    .setMessage(resources.getString(R.string.connection_error_message))
+                    .setPositiveButton(
+                            android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {}
+                            })
+                    .show();
         }
     }
 }

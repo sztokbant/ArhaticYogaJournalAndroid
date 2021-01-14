@@ -1,15 +1,5 @@
 package br.net.du.arhaticyogajournal;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -19,6 +9,15 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class AppUrlsTest {
@@ -36,17 +35,13 @@ public class AppUrlsTest {
     private static final String USPHC_URL = "https://" + USPHC_DOMAIN;
     private static final String PUBLIC_URL = "http://" + PUBLIC_DOMAIN;
 
-    @Mock
-    private Resources resources;
+    @Mock private Resources resources;
 
-    @Mock
-    private Context context;
+    @Mock private Context context;
 
-    @Mock
-    private SharedPreferences.Editor editor;
+    @Mock private SharedPreferences.Editor editor;
 
-    @Mock
-    private SharedPreferences sharedPreferences;
+    @Mock private SharedPreferences sharedPreferences;
 
     private AppUrls appUrls;
 
@@ -148,8 +143,11 @@ public class AppUrlsTest {
 
     @Test
     public void isSignedOutUrl_pwext_true() {
-        assertTrue(appUrls.isSignedOutUrl(PROD_URL + "/users/pwext" +
-                "/1a2b7842207de53103d01fd8b54d7fda4d5bbc52e048532ef8c0fbeadc50edd0"));
+        assertTrue(
+                appUrls.isSignedOutUrl(
+                        PROD_URL
+                                + "/users/pwext"
+                                + "/1a2b7842207de53103d01fd8b54d7fda4d5bbc52e048532ef8c0fbeadc50edd0"));
     }
 
     @Test

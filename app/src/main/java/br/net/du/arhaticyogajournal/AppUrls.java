@@ -3,7 +3,6 @@ package br.net.du.arhaticyogajournal;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -27,7 +26,7 @@ public class AppUrls {
         final String prodDomain = resources.getString(R.string.prod_domain);
         final String publicDomain = resources.getString(R.string.public_domain);
 
-        allowedDomains = new String[]{prodDomain, publicDomain};
+        allowedDomains = new String[] {prodDomain, publicDomain};
 
         appPreferences = context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE);
 
@@ -36,7 +35,8 @@ public class AppUrls {
             setCurrentDomain(prodDomain);
         }
 
-        signedOutUrlPatterns = new String[]{"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
+        signedOutUrlPatterns =
+                new String[] {"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
     }
 
     public String getCurrentDomain() {
@@ -65,9 +65,10 @@ public class AppUrls {
             return false;
         }
 
-        return domain.startsWith(GENERIC_DOMAIN_PREFIX) &&
-                domain.endsWith(GENERIC_DOMAIN_SUFFIX) &&
-                domain.length() > GENERIC_DOMAIN_PREFIX.length() + GENERIC_DOMAIN_SUFFIX.length();
+        return domain.startsWith(GENERIC_DOMAIN_PREFIX)
+                && domain.endsWith(GENERIC_DOMAIN_SUFFIX)
+                && domain.length()
+                        > GENERIC_DOMAIN_PREFIX.length() + GENERIC_DOMAIN_SUFFIX.length();
     }
 
     public boolean isSignedOutUrl(final String url) {
