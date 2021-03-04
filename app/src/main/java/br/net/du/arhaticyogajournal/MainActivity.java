@@ -1,27 +1,38 @@
 package br.net.du.arhaticyogajournal;
 
+import static br.net.du.arhaticyogajournal.Constants.REQUEST_WRITE_EXTERNAL_STORAGE;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.MailTo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
+import android.webkit.DownloadListener;
 import android.webkit.JsResult;
+import android.webkit.URLUtil;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.clans.fab.FloatingActionMenu;
 
@@ -92,6 +103,8 @@ public class MainActivity extends Activity {
         // Disable auto-complete suggestions to prevent NullPointerException with AutofillPopup
         webView.getSettings().setSaveFormData(false);
 
+        webView.setDownloadListener(buildDownloadListener());
+
         appendAppInfoToUserAgent();
     }
 
@@ -111,6 +124,45 @@ public class MainActivity extends Activity {
             webView.getSettings()
                     .setUserAgentString(String.format("%s %s", currentUserAgentString, appInfo));
         }
+    }
+
+    private DownloadListener buildDownloadListener() {
+        return new DownloadListener() {
+            @Override
+            public void onDownloadStart(
+                    final String url,
+                    final String userAgent,
+                    final String contentDisposition,
+                    final String mimeType,
+                    final long contentLength) {
+                final DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url));
+
+                request.setMimeType(mimeType);
+                request.addRequestHeader("cookie", CookieManager.getInstance().getCookie(url));
+                request.addRequestHeader("User-Agent", userAgent);
+
+                final String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
+                final String description =
+                        String.format(
+                                getResources().getString(R.string.downloading_file)
+                                        + " "
+                                        + fileName);
+                request.setDescription(description);
+
+                request.setTitle(fileName);
+                request.allowScanningByMediaScanner();
+                request.setNotificationVisibility(
+                        DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setDestinationInExternalPublicDir(
+                        Environment.DIRECTORY_DOWNLOADS, fileName);
+
+                longToast(description);
+
+                final DownloadManager downloadManager =
+                        (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                downloadManager.enqueue(request);
+            }
+        };
     }
 
     /**
@@ -207,6 +259,27 @@ public class MainActivity extends Activity {
         webView.saveState(outState);
     }
 
+    @Override
+    public void onRequestPermissionsResult(
+            final int requestCode, final String[] permissions, final int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    longToast(getResources().getString(R.string.storage_permission_granted));
+                } else {
+                    longToast(getResources().getString(R.string.storage_permission_denied));
+                }
+                break;
+
+            default:
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+    }
+
+    private void longToast(final String text) {
+        Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
+    }
+
     /**
      * WebViewClient with external handling of "mailto:" URLs, ignoring "tel:" and URLs not allowed
      * by AppUrls. It will show SwipeRefreshLayout progress spinner when loading URL.
@@ -217,9 +290,7 @@ public class MainActivity extends Activity {
     private class RestrictedWebViewClient extends WebViewClient {
 
         @Override
-        public boolean shouldOverrideUrlLoading(
-                final WebView view, final WebResourceRequest request) {
-            final String url = request.getUrl().toString();
+        public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
 
             if (url.startsWith(WebView.SCHEME_MAILTO)) {
                 final MailTo mailto = MailTo.parse(url);
@@ -240,6 +311,10 @@ public class MainActivity extends Activity {
                 view.getContext().startActivity(emailIntent);
             } else if (url.startsWith(WebView.SCHEME_TEL)) {
                 // prevents accidental clicks on numbers from being interpreted as "tel:"
+            } else if (appUrls.isDownloadable(url)) {
+                if (checkWriteExternalStoragePermission()) {
+                    view.loadUrl(url);
+                }
             } else if (appUrls.isAllowed(url)) {
                 view.loadUrl(url);
             } else {
@@ -247,6 +322,18 @@ public class MainActivity extends Activity {
                 startActivity(i);
             }
 
+            return true;
+        }
+
+        private boolean checkWriteExternalStoragePermission() {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
+                    && checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(
+                        new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        REQUEST_WRITE_EXTERNAL_STORAGE);
+                return false;
+            }
             return true;
         }
 

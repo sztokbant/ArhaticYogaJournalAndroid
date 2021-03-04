@@ -6,14 +6,18 @@
     <string name="app_user_agent">ArhaticYogaJournalAndroid</string>
     <string name="default_email_subject">"Arhatic Yoga Journal Android"</string>
 
-    <string name="connection_error_title">Error</string>
-    <string name="connection_error_message">The Internet connection appears to be offline. Swipe down to retry.</string>
-
     <string name="prod_domain">arhaticnet.herokuapp.com</string>
     <string name="beta_domain">ayj-beta.herokuapp.com</string>
     <string name="gamma_domain">ayj-gamma.herokuapp.com</string>
     <string name="usphc_domain">ayjournal.herokuapp.com</string>
     <string name="public_domain">arhaticyogajournal.com</string>
     <string name="www_public_domain">www.arhaticyogajournal.com</string>
+
+    <string name="connection_error_title">Error</string>
+    <string name="connection_error_message">The Internet connection appears to be offline. Swipe down to retry.</string>
+
+    <string name="storage_permission_granted">Storage permission granted, you may now download.</string>
+    <string name="storage_permission_denied">File cannot be downloaded unless Storage permission is granted.</string>
+    <string name="downloading_file">Downloading file</string>
 
 </resources>

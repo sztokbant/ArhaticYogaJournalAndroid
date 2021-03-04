@@ -87,4 +87,8 @@ public class AppUrls {
     public boolean isCurrentDomain(final String webViewUrl) {
         return !currentDomain.isEmpty() && webViewUrl.contains(currentDomain);
     }
+
+    public boolean isDownloadable(final String url) {
+        return isAllowed(url) && url.endsWith(".zip");
+    }
 }

@@ -35,6 +35,8 @@ public class AppUrlsTest {
     private static final String USPHC_URL = "https://" + USPHC_DOMAIN;
     private static final String PUBLIC_URL = "http://" + PUBLIC_DOMAIN;
 
+    private static final String NOT_ALLOWED_URL = "https://www.amazon.com";
+
     @Mock private Resources resources;
 
     @Mock private Context context;
@@ -192,5 +194,25 @@ public class AppUrlsTest {
         verify(editor, times(1)).putString(eq(CURRENT_DOMAIN_KEY), eq(PROD_DOMAIN));
         verify(editor, times(1)).putString(eq(CURRENT_DOMAIN_KEY), eq(BETA_DOMAIN));
         verify(editor, times(2)).apply();
+    }
+
+    @Test
+    public void isDownloadable_validDomainZipFile_returnTrue() {
+        assertTrue(appUrls.isDownloadable(PROD_URL + "/export_data_download.zip"));
+    }
+
+    @Test
+    public void isDownloadable_validDomainHtmlFile_returnFalse() {
+        assertFalse(appUrls.isDownloadable(PROD_URL + "/export_data_download.html"));
+    }
+
+    @Test
+    public void isDownloadable_invalidDomainZipFile_returnFalse() {
+        assertFalse(appUrls.isDownloadable(NOT_ALLOWED_URL + "/export_data_download.zip"));
+    }
+
+    @Test
+    public void isDownloadable_invalidDomainHtmlFile_returnFalse() {
+        assertFalse(appUrls.isDownloadable(NOT_ALLOWED_URL + "/export_data_download.html"));
     }
 }
