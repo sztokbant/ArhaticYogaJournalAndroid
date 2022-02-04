@@ -132,6 +132,11 @@ public class AppUrlsTest {
     }
 
     @Test
+    public void isAllowed_aboutBlank_false() {
+        assertFalse(appUrls.isAllowed("about:blank"));
+    }
+
+    @Test
     public void isSignedOutUrl_baseUrlAndStats_false() {
         assertFalse(appUrls.isSignedOutUrl(PROD_URL));
         assertFalse(appUrls.isSignedOutUrl(PROD_URL + "/stats"));
