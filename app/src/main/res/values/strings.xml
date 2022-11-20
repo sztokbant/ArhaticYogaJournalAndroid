@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
+    <!-- CustomWebApp: Define application name-related strings -->
     <string name="app_name">Arhatic Yoga Journal</string>
     <string name="app_name_short">AY Journal</string>
     <string name="app_user_agent">ArhaticYogaJournalAndroid</string>
     <string name="default_email_subject">"Arhatic Yoga Journal Android"</string>
 
+    <!-- CustomWebApp: Define app environment URLs (these should be updated in AndroidManifest.xml as well) -->
     <string name="prod_domain">arhaticnet.herokuapp.com</string>
     <string name="beta_domain">ayj-beta.herokuapp.com</string>
     <string name="gamma_domain">ayj-gamma.herokuapp.com</string>
@@ -19,5 +20,4 @@
     <string name="storage_permission_granted">Storage permission granted, you may now download.</string>
     <string name="storage_permission_denied">File cannot be downloaded unless Storage permission is granted.</string>
     <string name="downloading_file">Downloading file</string>
-
 </resources>

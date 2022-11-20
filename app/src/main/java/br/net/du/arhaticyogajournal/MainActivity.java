@@ -37,6 +37,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.github.clans.fab.FloatingActionMenu;
 
 public class MainActivity extends Activity {
+
     private AppUrls appUrls;
     private SwipeRefreshLayout swipeRefresh;
     private WebView webView;
@@ -62,9 +63,20 @@ public class MainActivity extends Activity {
 
         floatingActionMenuManager =
                 new FloatingActionMenuManager(
-                        (FloatingActionMenu) findViewById(R.id.floating_action_menu),
-                        webView,
-                        appUrls);
+                        getApplicationContext(), getFloatingActionMenu(), webView, appUrls);
+    }
+
+    private FloatingActionMenu getFloatingActionMenu() {
+        final FloatingActionMenu menu = findViewById(R.id.floating_action_menu);
+
+        menu.setVisibility(View.INVISIBLE);
+        menu.setAnimationDelayPerItem(14);
+        menu.setMenuButtonColorNormal(
+                getApplicationContext().getResources().getColor(R.color.menu_labels_colorNormal));
+        menu.setMenuButtonColorPressed(
+                getApplicationContext().getResources().getColor(R.color.menu_labels_colorPressed));
+
+        return menu;
     }
 
     /**

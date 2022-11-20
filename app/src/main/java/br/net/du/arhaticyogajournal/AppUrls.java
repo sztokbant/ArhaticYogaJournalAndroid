@@ -7,7 +7,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class AppUrls {
-    private static final String PACKAGE_NAME = "br.net.du.arhaticyogajournal";
+    // CustomWebApp: Define signed-out URL paths to prevent floating action menu from being
+    // displayed
+    private static final String[] SIGNED_OUT_URL_PATTERNS =
+            new String[] {"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
     private static final String CURRENT_DOMAIN_KEY = "currentDomain";
 
     private static final String GENERIC_DOMAIN_PREFIX = "ayj";
@@ -15,8 +18,6 @@ public class AppUrls {
 
     private final String[] allowedDomains;
     private String currentDomain;
-
-    private final String[] signedOutUrlPatterns;
 
     private final SharedPreferences appPreferences;
 
@@ -28,15 +29,13 @@ public class AppUrls {
 
         allowedDomains = new String[] {prodDomain, publicDomain};
 
-        appPreferences = context.getSharedPreferences(PACKAGE_NAME, Context.MODE_PRIVATE);
+        appPreferences =
+                context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
 
         currentDomain = appPreferences.getString(CURRENT_DOMAIN_KEY, null);
         if (currentDomain == null) {
             setCurrentDomain(prodDomain);
         }
-
-        signedOutUrlPatterns =
-                new String[] {"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
     }
 
     public String getCurrentDomain() {
@@ -72,7 +71,7 @@ public class AppUrls {
     }
 
     public boolean isSignedOutUrl(final String url) {
-        return urlContainsAnyPattern(url, signedOutUrlPatterns);
+        return urlContainsAnyPattern(url, SIGNED_OUT_URL_PATTERNS);
     }
 
     private boolean urlContainsAnyPattern(final String url, final String[] patterns) {

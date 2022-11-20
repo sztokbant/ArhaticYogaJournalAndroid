@@ -1,6 +1,8 @@
 package br.net.du.arhaticyogajournal;
 
+import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
@@ -8,37 +10,39 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class FloatingActionMenuManager {
+    // CustomWebApp: Define buttons in floating action menu and their paths
+    private static final ButtonConfig[] BUTTON_CONFIGS = {
+        new ButtonConfig("Log Study", R.drawable.ic_study, "studies/new"),
+        new ButtonConfig("Log Service", R.drawable.ic_service, "services/new"),
+        new ButtonConfig("Log Tithing", R.drawable.ic_dollar, "tithings/new"),
+        new ButtonConfig("Log Practice", R.drawable.ic_launcher, "practice_executions/multi")
+    };
+
+    private final Context applicationContext;
     private final FloatingActionMenu floatingActionMenu;
     private final WebView webView;
     private final AppUrls appUrls;
 
-    private FloatingActionButton newPracticeExecutionButton;
-    private FloatingActionButton newTithingButton;
-    private FloatingActionButton newServiceButton;
-    private FloatingActionButton newStudyButton;
+    private String baseUrl;
 
     public FloatingActionMenuManager(
+            final Context applicationContext,
             final FloatingActionMenu floatingActionMenu,
             final WebView webView,
             final AppUrls appUrls) {
+        this.applicationContext = applicationContext;
         this.floatingActionMenu = floatingActionMenu;
         this.webView = webView;
         this.appUrls = appUrls;
 
-        newPracticeExecutionButton =
-                (FloatingActionButton) floatingActionMenu.findViewById(R.id.new_practice_execution);
-        newTithingButton = (FloatingActionButton) floatingActionMenu.findViewById(R.id.new_tithing);
-        newServiceButton = (FloatingActionButton) floatingActionMenu.findViewById(R.id.new_service);
-        newStudyButton = (FloatingActionButton) floatingActionMenu.findViewById(R.id.new_study);
-
-        updateCurrentDomain(webView.getUrl());
+        populateWithCurrentDomain(webView.getUrl());
     }
 
     public void refresh() {
         final String webViewUrl = webView.getUrl();
 
         if (!appUrls.isCurrentDomain(webViewUrl)) {
-            updateCurrentDomain(webViewUrl);
+            populateWithCurrentDomain(webViewUrl);
         }
 
         if (appUrls.isSignedOutUrl(webViewUrl)) {
@@ -48,44 +52,51 @@ public class FloatingActionMenuManager {
         }
     }
 
-    private void updateCurrentDomain(final String webViewUrl) {
-        String loadedDomain;
-        try {
-            final URL url = new URL(webViewUrl);
-            loadedDomain = url.getHost();
-            if (!appUrls.getCurrentDomain().equals(loadedDomain)) {
-                appUrls.setCurrentDomain(loadedDomain);
-            }
-        } catch (final MalformedURLException e) {
-            loadedDomain = appUrls.getCurrentDomain();
-        }
-
-        final String baseUrl = appUrls.getCurrentUrl();
-
-        createOnClickListenerForFloatingActionButton(
-                newPracticeExecutionButton, baseUrl, "practice_executions/multi");
-        createOnClickListenerForFloatingActionButton(newTithingButton, baseUrl, "tithings/new");
-        createOnClickListenerForFloatingActionButton(newServiceButton, baseUrl, "services/new");
-        createOnClickListenerForFloatingActionButton(newStudyButton, baseUrl, "studies/new");
+    public void closeMenu() {
+        floatingActionMenu.close(false);
     }
 
-    private void createOnClickListenerForFloatingActionButton(
-            final FloatingActionButton floatingActionButton,
-            final String baseUrl,
-            final String path) {
-        final String url = String.format("%s/%s", baseUrl, path);
+    private void populateWithCurrentDomain(final String webViewUrl) {
+        try {
+            final String webViewHost = new URL(webViewUrl).getHost();
+            if (!appUrls.getCurrentDomain().equals(webViewHost)) {
+                appUrls.setCurrentDomain(webViewHost);
+            }
+        } catch (final MalformedURLException e) {
+            // ignore
+        }
 
-        floatingActionButton.setOnClickListener(
+        baseUrl = appUrls.getCurrentUrl();
+
+        floatingActionMenu.removeAllMenuButtons();
+        for (final ButtonConfig buttonConfig : BUTTON_CONFIGS) {
+            floatingActionMenu.addMenuButton(initButton(buttonConfig));
+        }
+    }
+
+    private FloatingActionButton initButton(final ButtonConfig buttonConfig) {
+        final FloatingActionButton button = new FloatingActionButton(applicationContext);
+
+        button.setLayoutParams(
+                new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        button.setColorNormal(
+                applicationContext.getResources().getColor(R.color.menu_labels_colorNormal));
+        button.setColorPressed(
+                applicationContext.getResources().getColor(R.color.menu_labels_colorPressed));
+        button.setImageResource(buttonConfig.getImageResource());
+        button.setLabelText(buttonConfig.getLabelText());
+        button.setButtonSize(FloatingActionButton.SIZE_MINI);
+
+        button.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(final View view) {
-                        webView.loadUrl(url);
-                        floatingActionMenu.close(false);
+                        webView.loadUrl(baseUrl + "/" + buttonConfig.getPath());
+                        closeMenu();
                     }
                 });
-    }
 
-    public void closeMenu() {
-        floatingActionMenu.close(false);
+        return button;
     }
 }

@@ -1,5 +1,4 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-
     <!--
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
@@ -18,15 +17,9 @@
     </style>
 
     <style name="CustomTheme" parent="Theme.AppCompat.Light">
-
         <!-- https://chris.banes.me/2014/10/17/appcompat-v21/ -->
-
-
-        <!-- colorPrimaryDark is used for the status bar -->
-        <item name="colorPrimaryDark">#410453</item>
-
-        <!-- colorAccent is used as the default value for colorControlActivated which is used to tint widgets -->
-        <item name="colorAccent">#64187b</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
