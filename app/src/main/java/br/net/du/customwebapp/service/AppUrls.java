@@ -1,41 +1,45 @@
-package br.net.du.arhaticyogajournal;
+package br.net.du.customwebapp.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class AppUrls {
-    // CustomWebApp: Define signed-out URL paths to prevent floating action menu from being
-    // displayed
-    private static final String[] SIGNED_OUT_URL_PATTERNS =
-            new String[] {"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
     private static final String CURRENT_DOMAIN_KEY = "currentDomain";
-
-    private static final String GENERIC_DOMAIN_PREFIX = "ayj";
-    private static final String GENERIC_DOMAIN_SUFFIX = ".herokuapp.com";
-
-    private final String[] allowedDomains;
-    private String currentDomain;
 
     private final SharedPreferences appPreferences;
 
-    public AppUrls(final Context context) {
-        final Resources resources = context.getResources();
+    private final String[] allowedDomains;
+    private final String genericDomainPrefix;
+    private final String genericDomainSuffix;
+    private final String[] signedOutUrlPatterns;
 
-        final String prodDomain = resources.getString(R.string.prod_domain);
-        final String publicDomain = resources.getString(R.string.public_domain);
+    private String currentDomain;
 
-        allowedDomains = new String[] {prodDomain, publicDomain};
+    public AppUrls(
+            final Context context,
+            final String prodDomain,
+            final String[] otherAllowedDomains,
+            final String genericDomainPrefix,
+            final String genericDomainSuffix,
+            final String[] signedOutUrlPatterns) {
+        allowedDomains = new String[1 + otherAllowedDomains.length];
+        allowedDomains[0] = prodDomain;
+        for (int i = 0; i < otherAllowedDomains.length; i++) {
+            allowedDomains[i + 1] = otherAllowedDomains[i];
+        }
 
         appPreferences =
                 context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
-
         currentDomain = appPreferences.getString(CURRENT_DOMAIN_KEY, null);
         if (currentDomain == null) {
             setCurrentDomain(prodDomain);
         }
+
+        this.genericDomainPrefix = genericDomainPrefix;
+        this.genericDomainSuffix = genericDomainSuffix;
+        this.signedOutUrlPatterns = signedOutUrlPatterns;
     }
 
     public String getCurrentDomain() {
@@ -48,7 +52,7 @@ public class AppUrls {
     }
 
     public String getCurrentUrl() {
-        return String.format("%s%s", "https://", currentDomain);
+        return "https://" + currentDomain;
     }
 
     public boolean isAllowed(final String url) {
@@ -56,7 +60,15 @@ public class AppUrls {
     }
 
     private boolean isAllowedGeneric(final String stringUrl) {
-        String domain;
+        if (genericDomainPrefix == null || genericDomainSuffix == null) {
+            return false;
+        }
+
+        if ("".equals(genericDomainPrefix) && "".equals(genericDomainSuffix)) {
+            return false;
+        }
+
+        final String domain;
         try {
             final URL url = new URL(stringUrl);
             domain = url.getHost();
@@ -64,14 +76,16 @@ public class AppUrls {
             return false;
         }
 
-        return domain.startsWith(GENERIC_DOMAIN_PREFIX)
-                && domain.endsWith(GENERIC_DOMAIN_SUFFIX)
-                && domain.length()
-                        > GENERIC_DOMAIN_PREFIX.length() + GENERIC_DOMAIN_SUFFIX.length();
+        return domain.startsWith(genericDomainPrefix)
+                && domain.endsWith(genericDomainSuffix)
+                && domain.length() > genericDomainPrefix.length() + genericDomainSuffix.length();
     }
 
     public boolean isSignedOutUrl(final String url) {
-        return urlContainsAnyPattern(url, SIGNED_OUT_URL_PATTERNS);
+        // TODO This behaves unexpectedly when signedOutUrlPatterns contains
+        // "/someSubstringWithParamOnly?s=0" as well as "/someSubstring", it will return true for
+        // "/someSubstringWithParamOnly" (without the param) as it matches "/someSubstring"
+        return urlContainsAnyPattern(url, signedOutUrlPatterns);
     }
 
     private boolean urlContainsAnyPattern(final String url, final String[] patterns) {

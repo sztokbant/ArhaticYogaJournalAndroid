@@ -1,4 +1,4 @@
-package br.net.du.arhaticyogajournal;
+package br.net.du.customwebapp.model;
 
 public class ButtonConfig {
     private final String labelText;

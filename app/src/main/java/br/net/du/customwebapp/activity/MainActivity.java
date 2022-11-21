@@ -1,6 +1,8 @@
-package br.net.du.arhaticyogajournal;
+package br.net.du.customwebapp.activity;
 
-import static br.net.du.arhaticyogajournal.Constants.REQUEST_WRITE_EXTERNAL_STORAGE;
+import static br.net.du.customwebapp.config.Customizable.GENERIC_DOMAIN_PREFIX;
+import static br.net.du.customwebapp.config.Customizable.GENERIC_DOMAIN_SUFFIX;
+import static br.net.du.customwebapp.config.Customizable.SIGNED_OUT_URL_PATTERNS;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -34,9 +36,13 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import br.net.du.customwebapp.R;
+import br.net.du.customwebapp.service.AppUrls;
+import br.net.du.customwebapp.service.FloatingActionMenuManager;
 import com.github.clans.fab.FloatingActionMenu;
 
 public class MainActivity extends Activity {
+    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 1;
 
     private AppUrls appUrls;
     private SwipeRefreshLayout swipeRefresh;
@@ -52,7 +58,14 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        appUrls = new AppUrls(getBaseContext());
+        appUrls =
+                new AppUrls(
+                        getBaseContext(),
+                        getString(R.string.prod_domain),
+                        new String[] {getString(R.string.public_domain)},
+                        GENERIC_DOMAIN_PREFIX,
+                        GENERIC_DOMAIN_SUFFIX,
+                        SIGNED_OUT_URL_PATTERNS);
 
         buildSwipeRefreshLayout();
 
@@ -133,8 +146,7 @@ public class MainActivity extends Activity {
         final String appInfo = getString(R.string.app_user_agent) + "-" + versionCode;
 
         if (!currentUserAgentString.endsWith(appInfo)) {
-            webView.getSettings()
-                    .setUserAgentString(String.format("%s %s", currentUserAgentString, appInfo));
+            webView.getSettings().setUserAgentString(currentUserAgentString + " " + appInfo);
         }
     }
 
@@ -155,10 +167,7 @@ public class MainActivity extends Activity {
 
                 final String fileName = URLUtil.guessFileName(url, contentDisposition, mimeType);
                 final String description =
-                        String.format(
-                                getResources().getString(R.string.downloading_file)
-                                        + " "
-                                        + fileName);
+                        getResources().getString(R.string.downloading_file) + " " + fileName;
                 request.setDescription(description);
 
                 request.setTitle(fileName);

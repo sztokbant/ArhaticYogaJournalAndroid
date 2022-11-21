@@ -1,22 +1,19 @@
-package br.net.du.arhaticyogajournal;
+package br.net.du.customwebapp.service;
+
+import static br.net.du.customwebapp.config.Customizable.BUTTON_CONFIGS;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import br.net.du.customwebapp.R;
+import br.net.du.customwebapp.model.ButtonConfig;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class FloatingActionMenuManager {
-    // CustomWebApp: Define buttons in floating action menu and their paths
-    private static final ButtonConfig[] BUTTON_CONFIGS = {
-        new ButtonConfig("Log Study", R.drawable.ic_study, "studies/new"),
-        new ButtonConfig("Log Service", R.drawable.ic_service, "services/new"),
-        new ButtonConfig("Log Tithing", R.drawable.ic_dollar, "tithings/new"),
-        new ButtonConfig("Log Practice", R.drawable.ic_launcher, "practice_executions/multi")
-    };
 
     private final Context applicationContext;
     private final FloatingActionMenu floatingActionMenu;
