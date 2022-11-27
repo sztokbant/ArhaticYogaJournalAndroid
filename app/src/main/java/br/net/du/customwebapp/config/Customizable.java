@@ -6,16 +6,20 @@ import br.net.du.customwebapp.model.ButtonConfig;
 public class Customizable {
     // Define buttons in floating action menu and their paths
     public static final ButtonConfig[] BUTTON_CONFIGS = {
-        new ButtonConfig("CustomWebApp", R.drawable.ic_launcher, "sztokbant/CustomWebApp-Android")
+        new ButtonConfig("Log Study", R.drawable.ic_study, "studies/new"),
+        new ButtonConfig("Log Service", R.drawable.ic_service, "services/new"),
+        new ButtonConfig("Log Tithing", R.drawable.ic_dollar, "tithings/new"),
+        new ButtonConfig("Log Practice", R.drawable.ic_launcher, "practice_executions/multi")
     };
 
     // Define other domains allowed in the app's webview
-    public static final String[] OTHER_ALLOWED_DOMAINS = new String[] {};
+    public static final String[] OTHER_ALLOWED_DOMAINS = new String[] {"arhaticyogajournal.com"};
 
     // Define signed-out URL paths to prevent floating action menu from being displayed
-    public static final String[] SIGNED_OUT_URL_PATTERNS = new String[] {};
+    public static final String[] SIGNED_OUT_URL_PATTERNS =
+            new String[] {"/about?s=0", "/password_reset", "/users/pwext", "/welcome"};
 
     // Define optional prefix, suffix for extra allowed domains
-    public static final String GENERIC_DOMAIN_PREFIX = null;
-    public static final String GENERIC_DOMAIN_SUFFIX = null;
+    public static final String GENERIC_DOMAIN_PREFIX = "ayj";
+    public static final String GENERIC_DOMAIN_SUFFIX = ".herokuapp.com";
 }
