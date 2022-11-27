@@ -1,9 +1,3 @@
-# CustomWebApp-Android
+ArhaticYogaJournalAndroid is the companion Android app for the Arhatic Yoga Journal web app.
 
-Scaffolding for creating a native Android application to load specific websites.
-
-- build.gradle: modify applicationId to match your application
-- AndroidManifest.xml: update android:versionCode and android:versionName when releasing new versions
-- Customizable.java: customize you application
-- strings.xml: define your application's name-related strings and domains
-- colors.xml: customize your application's colors
+It is a simple app which consists of a web view to load the specified web site, and a floating action menu customized to point to pre-defined pages.

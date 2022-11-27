@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- CustomWebApp: 'package' should be left untouched, just update android:versionCode and android:versionName when
-     releasing new versions -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.net.du.customwebapp"
-    android:versionCode="1"
-    android:versionName="1.0.0">
+    android:versionCode="26"
+    android:versionName="1.0.26">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -40,6 +38,11 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="@string/prod_domain" />
+                <data android:host="@string/beta_domain" />
+                <data android:host="@string/gamma_domain" />
+                <data android:host="@string/usphc_domain" />
+                <data android:host="@string/public_domain" />
+                <data android:host="@string/www_public_domain" />
             </intent-filter>
         </activity>
     </application>
