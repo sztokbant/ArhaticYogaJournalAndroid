@@ -5,7 +5,8 @@ android {
     compileSdkVersion 33
 
     defaultConfig {
-        applicationId "br.net.du.arhaticyogajournal"
+        // CustomWebApp: modify applicationId to match your application
+        applicationId "br.net.du.customwebapp"
         minSdkVersion 14
         targetSdkVersion 33
     }

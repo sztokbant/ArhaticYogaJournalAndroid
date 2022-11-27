@@ -2,6 +2,7 @@ package br.net.du.customwebapp.activity;
 
 import static br.net.du.customwebapp.config.Customizable.GENERIC_DOMAIN_PREFIX;
 import static br.net.du.customwebapp.config.Customizable.GENERIC_DOMAIN_SUFFIX;
+import static br.net.du.customwebapp.config.Customizable.OTHER_ALLOWED_DOMAINS;
 import static br.net.du.customwebapp.config.Customizable.SIGNED_OUT_URL_PATTERNS;
 
 import android.Manifest;
@@ -62,7 +63,7 @@ public class MainActivity extends Activity {
                 new AppUrls(
                         getBaseContext(),
                         getString(R.string.prod_domain),
-                        new String[] {getString(R.string.public_domain)},
+                        OTHER_ALLOWED_DOMAINS,
                         GENERIC_DOMAIN_PREFIX,
                         GENERIC_DOMAIN_SUFFIX,
                         SIGNED_OUT_URL_PATTERNS);
