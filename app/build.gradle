@@ -6,7 +6,7 @@ android {
 
     defaultConfig {
         applicationId "br.net.du.arhaticyogajournal"
-        minSdkVersion 25
+        minSdkVersion 14
         targetSdkVersion 33
     }
 
