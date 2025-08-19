@@ -3,12 +3,12 @@ apply plugin: 'com.diffplug.spotless'
 
 android {
     namespace "br.net.du.customwebapp"
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "br.net.du.arhaticyogajournal"
         minSdkVersion 14
-        targetSdkVersion 34
+        targetSdkVersion 36
     }
 
     buildTypes {
